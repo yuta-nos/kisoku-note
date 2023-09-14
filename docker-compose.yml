@@ -9,12 +9,20 @@ services:
       - db-postgres:/var/lib/postgresql/data
   api:
     build: ./backend
-    command: /bin/sh -c "rm -f /tmp/pids/server.pid && rails s -p 3000 -b '0.0.0.0' "
+    command: /bin/sh -c "rm -f /api/tmp/pids/server.pid && rails s -p 3000 -b '0.0.0.0' "
     ports:
       - 3000:3000
     volumes:
       - ./backend:/api
     depends_on:
       - db
+  web:
+    build: ./frontend
+    tty: true
+    command: bash -c " cd app-front && npm install && npm run dev --host "
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/app
 volumes:
   db-postgres:
