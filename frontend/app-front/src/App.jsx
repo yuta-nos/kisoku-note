@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import Signin from "./components/auth/Signin";
 
 // router
 import { Routes, Route } from "react-router-dom";
@@ -12,7 +13,7 @@ const App = () => {
     <div className="App">
       <Header />
       <Routes>
-        <Route />
+        <Route path="/signin" element={<Signin />} />
       </Routes>
     </div>
   )
