@@ -1,7 +1,7 @@
 import React,{ useEffect, useState } from 'react'
 
 // route
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 // 非同期
 import axios from 'axios'
@@ -29,8 +29,10 @@ const TeamPage = () => {
     return teamSignupDate.toLocaleString('ja-JP');
   }
 
+  const navigate = useNavigate();
+
   return (
-    <Box maxW="600px" my={12} mx="auto" p={3} >
+    <Box maxW="650px" my={12} mx="auto" p={3} >
       <HStack mb={3}>
         <Text size="sm">組織情報</Text>
         <Spacer />
@@ -38,6 +40,7 @@ const TeamPage = () => {
           colorScheme='teal'
           variant='outline'
           size='sm'
+          onClick={ ()=>{ navigate(`/team/${param.id}/edit`, {state: teamData}) } }
         >組織情報を編集する（管理者のみ）</Button>
       </HStack>
       <Box mb={3} bgColor="gray.50" p={5} borderRadius={10}>
