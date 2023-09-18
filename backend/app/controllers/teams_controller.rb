@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
   def show
     team = Team.find(params[:id])
-    render status: 200, json: { data: team }
+    render status: 200, json: team, serializer: TeamSerializer
   end
 
   def create

@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 
 // styling
-import { Box, Button, Text, Heading, Spacer, Tag, Avatar, TagLabel, HStack } from '@chakra-ui/react'
+import { Box, Button, Text, Spacer, Tag, Avatar, TagLabel, HStack } from '@chakra-ui/react'
 
 const TeamPage = () => {
 
@@ -18,7 +18,7 @@ const TeamPage = () => {
   useEffect( ()=>{
     const getTeam = async() => {
       const result = await axios.get(`http://localhost:3000/teams/${param.id}`)
-      .then( (res)=>{ return res.data.data } );
+      .then( (res)=>{ return res.data } );
       setTeamData(result);
     }
     getTeam();
@@ -44,21 +44,32 @@ const TeamPage = () => {
         <Text fontWeight="bold">{teamData?.name}</Text>
       </Box>
       <Box mb={5} bgColor="gray.50" p={5}  borderRadius={10}>        
-        <Text mb={3}>利用開始日：{teamData?.created_at && formatDate(teamData.created_at)}
-        </Text>
-        <Box>
+        <Box mb={3}>
           <Text mb={3}>所属メンバー：</Text>
-          <Tag size='lg' colorScheme='red' borderRadius='full'>
-            <Avatar
-              src=''
-              size='xs'
-              name='Taro Yamada'
-              ml={-1}
-              mr={2}
-            />
-            <TagLabel>Tarou Yamada</TagLabel>
-          </Tag>
+          {teamData?.users.map( (member)=>{
+            return(
+              <Tag
+                size='lg'
+                colorScheme='blue'
+                borderRadius='full'
+                mr={3}
+                mb={3}
+                key={member.uid}
+              >
+                <Avatar
+                  src=''
+                  size='xs'
+                  name={member.name}
+                  ml={-1}
+                  mr={2}
+                />
+                <TagLabel>{member.name}</TagLabel>
+              </Tag>
+            )
+          } )}
         </Box>
+        <Text>利用開始日：{teamData?.created_at && formatDate(teamData.created_at)}
+        </Text>
       </Box>
 
       <Box mb={5}>

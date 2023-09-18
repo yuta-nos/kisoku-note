@@ -49,4 +49,5 @@ end
 # 追加
 gem "devise"
 gem "devise_token_auth"
+gem 'active_model_serializers'
 
