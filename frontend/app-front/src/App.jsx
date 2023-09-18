@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Signin from "./components/auth/Signin";
+import Footer from "./components/Footer";
 
 // router
 import { Routes, Route } from "react-router-dom";
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<Signin />} />
       </Routes>
+      <Footer />
     </div>
   )
 }
