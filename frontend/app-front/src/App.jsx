@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Signin from "./components/auth/Signin";
+import TeamPage from "./components/team/TeamPage";
 import Footer from "./components/Footer";
 
 // router
@@ -17,6 +18,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signin" element={<Signin />} />
+        <Route path="/team/:id" element={<TeamPage />} />
       </Routes>
       <Footer />
     </div>
