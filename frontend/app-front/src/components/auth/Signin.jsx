@@ -7,7 +7,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 // styling
-import { Box, Input, Button, Heading, Text } from "@chakra-ui/react";
+import { Box, Input, Button, Heading, Text, useToast } from "@chakra-ui/react";
 
 const Signin = () => {
 
@@ -16,18 +16,36 @@ const Signin = () => {
 
   const navigate = useNavigate();
 
+  const toast = useToast()
+
   const trySignin = async() => {
     const signinData = {
       email: inputEmail,
       password: inputPassword
     }
-    const result = await axios.post("http://localhost:3000/auth/sign_in", signinData)
-    .then( (res)=>{
-      console.log(res);
-      if( res.status === 200 ){
-        navigate('/')
-      }
-    } );
+    try{
+      const result = await axios.post("http://localhost:3000/auth/sign_in", signinData)
+      .then( (res)=>{
+        console.log(res);
+        if( res.status === 200 ){
+          navigate('/');
+          toast({
+            title: 'ログイン成功',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          })
+        }
+      } );
+    } catch(error) {
+      console.log(error);
+      toast({
+        title: "ログイン失敗",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   }
 
   return (
