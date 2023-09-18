@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import Home from "./components/Home";
 import Signin from "./components/auth/Signin";
 
 // router
@@ -13,6 +14,7 @@ const App = () => {
     <div className="App">
       <Header />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/signin" element={<Signin />} />
       </Routes>
     </div>

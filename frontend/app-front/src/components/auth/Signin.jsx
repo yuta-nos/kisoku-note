@@ -3,6 +3,9 @@ import React,{ useState } from 'react'
 // 非同期処理
 import axios from "axios";
 
+// route
+import { useNavigate } from "react-router-dom";
+
 // styling
 import { Box, Input, Button, Heading, Text } from "@chakra-ui/react";
 
@@ -11,12 +14,20 @@ const Signin = () => {
   const [inputEmail, setInputEmail] = useState();
   const [inputPassword, setInputPassword] = useState();
 
+  const navigate = useNavigate();
+
   const trySignin = async() => {
     const signinData = {
       email: inputEmail,
       password: inputPassword
     }
-    const result = await axios.post("http://localhost:3000/users/sign_in", signinData).then( (res)=>{ console.log(res) } );
+    const result = await axios.post("http://localhost:3000/auth/sign_in", signinData)
+    .then( (res)=>{
+      console.log(res);
+      if( res.status === 200 ){
+        navigate('/')
+      }
+    } );
   }
 
   return (
