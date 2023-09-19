@@ -8,6 +8,12 @@ class TeamsController < ApplicationController
   end
 
   def update
+    team = Team.find(params[:id])
+    if team.update( team_params )
+      render status: 200, json: { data: team }
+    else
+      render status: 400, json: { data: team.errors }
+    end
   end
 
   def destroy
@@ -16,6 +22,7 @@ class TeamsController < ApplicationController
   private
 
   def team_params
+    params.require(:team).permit(:name)
   end
 
 end

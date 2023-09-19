@@ -1,24 +1,35 @@
 import React, { useState } from 'react'
 
+// redux
+import { useDispatch } from 'react-redux'
+import { asyncUpdateTeamName } from '../../store/teamSlice'
+
 // route
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // styling
 import { Box, Text, HStack, Input, Button } from '@chakra-ui/react'
-import {
-  Table, Thead, Tbody, Tfoot,
-  Tr, Th, Td,
-  TableCaption, TableContainer,
-} from '@chakra-ui/react'
+import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react'
 
 const TeamEdit = () => {
 
+  const dispatch = useDispatch();
+
   const location = useLocation();
   console.log(location);
+  const navigate = useNavigate();
 
   const [teamName, setTeamName] = useState(location.state.name);
   const editTeamName = (e) => {
     setTeamName(e.target.value);
+  }
+  const updateTeamName = (data) => {
+    const newData = {
+      id: data.id,
+      name: teamName
+    }
+    dispatch( asyncUpdateTeamName(newData) )
+    .then( ()=>{ navigate(`/team/${location.state.id}`) } );
   }
 
   const deleteMember = (id) => {
@@ -26,16 +37,22 @@ const TeamEdit = () => {
   }
 
   return (
-    <Box maxW="650px" my={12} mx="auto" p={3} >
+    <Box maxW="750px" my={12} mx="auto" p={3} >
       <HStack mb={3}>
         <Text size="sm">組織情報</Text>
       </HStack>
       <HStack mb={3} bgColor="gray.50" p={5} borderRadius={10}>
         <Text w="60px" fontSize="sm">組織名</Text>
-        <Input bgColor="white" placeholder="⚪︎⚪︎株式会社" value={teamName} onChange={(e)=>editTeamName(e)}></Input>
+        <Input
+          bgColor="white"
+          placeholder="⚪︎⚪︎株式会社"
+          value={teamName}
+          onChange={(e)=>editTeamName(e)}
+        ></Input>
         <Button
           colorScheme='teal'
           size='sm'
+          onClick={()=>updateTeamName(location.state)}
         >更新</Button>
       </HStack>
       <Box mb={5} bgColor="gray.50" p={5}  borderRadius={10}>        
@@ -72,8 +89,6 @@ const TeamEdit = () => {
             </Table>
           </TableContainer>
         </Box>
-        {/* <Text>利用開始日：{teamData?.created_at && formatDate(teamData.created_at)} */}
-        {/* </Text> */}
       </Box>
     </Box>
   )

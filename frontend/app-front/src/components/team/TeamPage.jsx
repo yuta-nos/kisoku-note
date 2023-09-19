@@ -1,27 +1,35 @@
-import React,{ useEffect, useState } from 'react'
+import React,{ useEffect } from 'react'
+
+// redux
+import { useSelector, useDispatch } from 'react-redux'
+import { asyncGetTeam } from '../../store/teamSlice'
 
 // route
 import { useNavigate, useParams } from 'react-router-dom'
 
 // 非同期
-import axios from 'axios'
+// import axios from 'axios'
 
 // styling
 import { Box, Button, Text, Spacer, Tag, Avatar, TagLabel, HStack } from '@chakra-ui/react'
 
 const TeamPage = () => {
 
+  const team = useSelector( (state)=>{ return state.team } );
+  const dispatch = useDispatch();
+
   let param = useParams();
 
-  const [teamData, setTeamData] = useState();
+  // const [teamData, setTeamData] = useState();
 
   useEffect( ()=>{
-    const getTeam = async() => {
-      const result = await axios.get(`http://localhost:3000/teams/${param.id}`)
-      .then( (res)=>{ return res.data } );
-      setTeamData(result);
-    }
-    getTeam();
+    dispatch( asyncGetTeam(param.id) );
+    // const getTeam = async() => {
+    //   const result = await axios.get(`http://localhost:3000/teams/${param.id}`)
+    //   .then( (res)=>{ return res.data } );
+    //   setTeamData(result);
+    // }
+    // getTeam();
   }, [] );
 
   const formatDate = (dateStr) => {
@@ -32,7 +40,7 @@ const TeamPage = () => {
   const navigate = useNavigate();
 
   return (
-    <Box maxW="650px" my={12} mx="auto" p={3} >
+    <Box maxW="750px" my={12} mx="auto" p={3} >
       <HStack mb={3}>
         <Text size="sm">組織情報</Text>
         <Spacer />
@@ -40,16 +48,16 @@ const TeamPage = () => {
           colorScheme='teal'
           variant='outline'
           size='sm'
-          onClick={ ()=>{ navigate(`/team/${param.id}/edit`, {state: teamData}) } }
+          onClick={ ()=>{ navigate(`/team/${param.id}/edit`, {state: team}) } }
         >組織情報を編集する（管理者のみ）</Button>
       </HStack>
       <Box mb={3} bgColor="gray.50" p={5} borderRadius={10}>
-        <Text fontWeight="bold">{teamData?.name}</Text>
+        <Text fontWeight="bold">{team?.name}</Text>
       </Box>
       <Box mb={5} bgColor="gray.50" p={5}  borderRadius={10}>        
         <Box mb={3}>
           <Text mb={3}>所属メンバー：</Text>
-          {teamData?.users.map( (member)=>{
+          {team?.users.map( (member)=>{
             return(
               <Tag
                 size='lg'
@@ -71,7 +79,7 @@ const TeamPage = () => {
             )
           } )}
         </Box>
-        <Text>利用開始日：{teamData?.created_at && formatDate(teamData.created_at)}
+        <Text>利用開始日：{team?.created_at && formatDate(team.created_at)}
         </Text>
       </Box>
 
