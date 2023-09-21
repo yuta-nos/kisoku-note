@@ -28,6 +28,16 @@ const Signin = () => {
       .then( (res)=>{
         console.log(res);
         if( res.status === 200 ){
+          // 認証情報を変数に格納
+          const accesstoken = res.headers['access-token'];
+          const client = res.headers['client'];
+          const uid = res.headers['uid'];
+
+          // ローカルストレージに保存
+          localStorage.setItem("access-token", accesstoken);
+          localStorage.setItem("client", client);
+          localStorage.setItem("uid", uid);
+
           navigate('/');
           toast({
             title: 'ログイン成功',
