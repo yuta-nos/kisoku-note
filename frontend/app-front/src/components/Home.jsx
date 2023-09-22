@@ -1,14 +1,23 @@
 import React from 'react'
 
+// route
+import { useNavigate } from "react-router-dom";
+
 // styling
 import { Box, Button, Divider, Heading, HStack, Spacer, Text, VStack } from '@chakra-ui/react'
 
 const Home = () => {
+
+  const navigate = useNavigate();
+
   return (
     <Box>
       <VStack bgColor="gray.200" py={100} mt={20}>
         <Text textAlign="center" fontSize="lg" mb={5}>組織内の規則管理を、もっとカンタンに。</Text>
-        <Button colorScheme="orange">さっそくはじめる</Button>
+        <Button
+          colorScheme="orange"
+          onClick={ ()=>{ navigate("/signup") } }
+        >さっそくはじめる</Button>
       </VStack>
       <Box my={50} maxW="650px" mx="auto">
         <Text mb={5}>組織内で作成した規則や、法令対応のための社内文書の管理、混乱していませんか？</Text>
@@ -43,7 +52,10 @@ const Home = () => {
           </VStack>
         </Box>
         <VStack my={20}>
-          <Button colorScheme="orange">kisoku note をはじめる</Button>
+          <Button
+            colorScheme="orange"
+            onClick={ ()=>{ navigate("/signup") } }
+          >kisoku note をはじめる</Button>
         </VStack>
       </Box>
     </Box>

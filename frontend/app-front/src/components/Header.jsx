@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from 'react'
 
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { setTrue, setFalse } from '../store/signinSlice';
+
+// route
+import { useNavigate } from "react-router-dom";
+
 // styling
 import { Box, Heading, HStack, Spacer, VStack, Text, Button } from "@chakra-ui/react";
 
 const Header = () => {
 
-  const [isSignedIn, setIsSignedIn] = useState();
+  const isSignedIn = useSelector( (state)=>{ return state.signin } );
+  console.log(isSignedIn);
+  const dispatch = useDispatch();
+
+  const [accessToken, setAccessToken] = useState();
+  const [client, setClient] = useState();
   const [uid, setUid] = useState();
 
   useEffect( ()=>{
@@ -14,10 +26,19 @@ const Header = () => {
     const uid = localStorage.getItem("uid");
     console.log(accesstoken, client, uid);
     if( accesstoken !== "" && client !== "" && uid !== "" ){
-      setIsSignedIn(true);
       setUid(uid);
     }
-  }, [] )
+  }, [isSignedIn] )
+
+  const navigate = useNavigate();
+
+  const deleteSession = () => {
+    localStorage.setItem("access-token", "");
+    localStorage.setItem("client", "");
+    localStorage.setItem("uid", "");
+    navigate("/mypage/1");
+    dispatch( setFalse() );
+  }
 
   return (
     <Box p={5} bgColor="gray.100" boxShadow="xl">
@@ -26,11 +47,18 @@ const Header = () => {
         <Spacer />
         <VStack>
           { isSignedIn ? 
-            <Text>{uid}</Text>
+            <HStack>
+              <Text mr={3}>{uid}</Text>
+              <Button
+                size="xs" bgColor="gray.300"
+                onClick={ deleteSession }
+              >ログアウト</Button>
+            </HStack>
             :
             <Button 
-              size="sm"
+              size="xs"
               bgColor="gray.300"
+              onClick={ ()=>{ navigate("/signin") } }
             >ログイン</Button>
           }
         </VStack>
