@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setTrue } from '../../store/signinSlice';
 
 // route
-import { useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation, useNavigate } from 'react-router-dom'
 
 // 非同期処理
 import axios from 'axios'
@@ -24,12 +24,14 @@ const Mypage = () => {
   console.log("params:", params);
   const location = useLocation();
   console.log(location);
+  const navigate = useNavigate();
 
   useEffect( ()=>{
+    // ログイン判定
     const accesstokenData = localStorage.getItem("access-token");
     if( accesstokenData !== "" ){
       dispatch( setTrue() );
-    }
+    };
   }, [] );
   
   return (
@@ -66,7 +68,11 @@ const Mypage = () => {
                   {
                     location.state.data.team_id
                   ? 
-                    <p>{location.state.data.team_id}</p>
+                    <Link
+                      onClick={ ()=>{ navigate( `/team/${location.state.data.team_id}` ) } }
+                      textDecoration="underline"
+                      color="blue.600"
+                    >{location.state.data.team_id}</Link>
                   :
                     <HStack>
                       <Text mr={5}>なし</Text>

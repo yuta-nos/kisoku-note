@@ -13,7 +13,6 @@ import { Box, Heading, HStack, Spacer, VStack, Text, Button } from "@chakra-ui/r
 const Header = () => {
 
   const isSignedIn = useSelector( (state)=>{ return state.signin } );
-  console.log(isSignedIn);
   const dispatch = useDispatch();
 
   const [accessToken, setAccessToken] = useState();

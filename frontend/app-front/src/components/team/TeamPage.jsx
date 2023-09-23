@@ -1,4 +1,5 @@
 import React,{ useEffect } from 'react'
+import Category from './Category'
 import Signout from '../auth/Signout'
 
 // redux
@@ -88,14 +89,7 @@ const TeamPage = () => {
             </Text>
           </Box>
           <Box mb={5}>
-          <HStack mb={3}>
-            <Text size="sm">管理文書</Text>
-            <Spacer />
-            <Button
-              colorScheme='teal'
-              size='sm'
-            >文書登録</Button>
-          </HStack>
+          <Category />
           </Box>
         </Box>
       :
