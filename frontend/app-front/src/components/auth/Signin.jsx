@@ -1,5 +1,9 @@
 import React,{ useState } from 'react'
 
+// redux
+import { useSelector, useDispatch } from "react-redux";
+import { setTrue } from '../../store/signinSlice';
+
 // 非同期処理
 import axios from "axios";
 
@@ -10,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 import { Box, Input, Button, Heading, Text, useToast } from "@chakra-ui/react";
 
 const Signin = () => {
+
+  const isSignedIn = useSelector( (state)=>{ return state.signin } );
+  const dispatch = useDispatch();
 
   const [inputEmail, setInputEmail] = useState();
   const [inputPassword, setInputPassword] = useState();
@@ -28,7 +35,25 @@ const Signin = () => {
       .then( (res)=>{
         console.log(res);
         if( res.status === 200 ){
-          navigate('/');
+
+          // 認証情報を変数に格納
+          const accesstoken = res.headers['access-token'];
+          const client = res.headers['client'];
+          const uid = res.headers['uid'];
+          const userId = res.data.data.id;
+
+          // ローカルストレージに保存
+          localStorage.setItem("access-token", accesstoken);
+          localStorage.setItem("client", client);
+          localStorage.setItem("uid", uid);
+
+          // status変更
+          dispatch(setTrue());
+
+          // 遷移設定
+          navigate(`/mypage/${userId}`, { state: res.data });
+
+          // toast
           toast({
             title: 'ログイン成功',
             status: 'success',
