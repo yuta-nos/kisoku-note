@@ -20,7 +20,7 @@ const signinSlice = createSlice({
         is_login: payload.is_login,
         email: payload.data.email,
         name: payload.data.name,
-        team_name: payload.team.name
+        team: payload.team
       };
     },
     deleteSession( state, { type, payload } ){
@@ -29,7 +29,7 @@ const signinSlice = createSlice({
         is_login: false,
         email: "",
         name: "",
-        team_name: ""
+        team: ""
       }
     }
   }
