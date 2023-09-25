@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   }
   # ログインユーザー取得のルーティング
   namespace :auth do
-    resources :sessions, only: %i[index]
+    resources :sessions, only: [:index]
   end
   
   resources :teams, only:[:create, :show, :update, :destroy]
