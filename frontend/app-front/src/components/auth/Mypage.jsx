@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Signout from './Signout';
 
-// redux
-import { useSelector, useDispatch } from "react-redux";
-import { setTrue } from '../../store/signinSlice';
-
 // route
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // 非同期処理
 import axios from 'axios'
@@ -17,27 +13,34 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/reac
 
 const Mypage = () => {
 
-  const isSignedIn = useSelector( (state)=>{ return state.signin } );
-  const dispatch = useDispatch();
-
-  const params = useParams();
-  console.log("params:", params);
   const location = useLocation();
-  console.log(location);
   const navigate = useNavigate();
 
+  const [ userData, setUserData ] = useState("");
+
   useEffect( ()=>{
-    // ログイン判定
-    const accesstokenData = localStorage.getItem("access-token");
-    if( accesstokenData !== "" ){
-      dispatch( setTrue() );
-    };
+    const currentUserData = {
+      "access-token": localStorage.getItem("access-token"),
+      "client": localStorage.getItem("client"),
+      "uid": localStorage.getItem("uid")
+    }
+    try{
+      const getCurrentUser = async() => {
+        const result = await axios.get("http://localhost:3000/auth/sessions", { params: currentUserData })
+        .then( (res)=>{ return res.data } );
+        setUserData(result);
+      }
+      getCurrentUser();
+    }
+    catch(error) {
+      console.log(error)
+    }
   }, [] );
   
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
       <Heading as="h3" size="md" mb={5}>マイページ</Heading>
-      { isSignedIn ? 
+      { userData.is_login ? 
         <Box my={10}>
           <TableContainer border="2px" borderColor="gray.300">
             <Table variant='simple'>
@@ -52,13 +55,13 @@ const Mypage = () => {
                   <Td
                     w="30%" borderRight="1px" borderColor="gray.100" fontSize="sm"
                   >名前：</Td>
-                  <Td>{location.state.data.name}</Td>
+                  <Td>{userData.data.name}</Td>
                 </Tr>
                 <Tr>
                   <Td
                     w="30%" borderRight="1px" borderColor="gray.100" fontSize="sm"
                   >メールアドレス：</Td>
-                  <Td>{location.state.data.email}</Td>
+                  <Td>{userData.data.email}</Td>
                 </Tr>
                 <Tr>
                   <Td
@@ -66,13 +69,13 @@ const Mypage = () => {
                   >所属組織：</Td>
                   <Td>
                   {
-                    location.state.data.team_id
+                    userData.team.id
                   ? 
                     <Link
-                      onClick={ ()=>{ navigate( `/team/${location.state.data.team_id}` ) } }
+                      onClick={ ()=>{ navigate( `/team/${userData.team.id}` ) } }
                       textDecoration="underline"
                       color="blue.600"
-                    >{location.state.data.team_id}</Link>
+                    >{userData.team.name}</Link>
                   :
                     <HStack>
                       <Text mr={5}>なし</Text>
