@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Signout from './Signout';
 
 // route
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 // 非同期処理
 import axios from 'axios'
@@ -13,7 +13,6 @@ import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/reac
 
 const Mypage = () => {
 
-  const location = useLocation();
   const navigate = useNavigate();
 
   const [ userData, setUserData ] = useState("");
@@ -27,7 +26,7 @@ const Mypage = () => {
     try{
       const getCurrentUser = async() => {
         const result = await axios.get("http://localhost:3000/auth/sessions", { params: currentUserData })
-        .then( (res)=>{ return res.data } );
+        .then( (res)=>{ console.log(res.data); return res.data } );
         setUserData(result);
       }
       getCurrentUser();
@@ -55,7 +54,11 @@ const Mypage = () => {
                   <Td
                     w="30%" borderRight="1px" borderColor="gray.100" fontSize="sm"
                   >名前：</Td>
-                  <Td>{userData.data.name}</Td>
+                  {userData.data.name ?
+                    <Td>{userData.data.name}</Td>
+                    :
+                    <Td>未登録</Td>
+                  }
                 </Tr>
                 <Tr>
                   <Td
@@ -69,13 +72,13 @@ const Mypage = () => {
                   >所属組織：</Td>
                   <Td>
                   {
-                    userData.team.id
+                    userData.team
                   ? 
                     <Link
                       onClick={ ()=>{ navigate( `/team/${userData.team.id}` ) } }
                       textDecoration="underline"
                       color="blue.600"
-                    >{userData.team.name}</Link>
+                    >{userData.team?.name}</Link>
                   :
                     <HStack>
                       <Text mr={5}>なし</Text>

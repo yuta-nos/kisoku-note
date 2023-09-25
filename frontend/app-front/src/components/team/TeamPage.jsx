@@ -5,7 +5,6 @@ import Signout from '../auth/Signout'
 // redux
 import { useSelector, useDispatch } from 'react-redux'
 import { asyncGetTeam } from '../../store/teamSlice'
-import { setTrue } from '../../store/signinSlice'
 
 // route
 import { useNavigate, useParams } from 'react-router-dom'
@@ -19,7 +18,7 @@ import { Box, Button, Text, Spacer, Tag, Avatar, TagLabel, HStack } from '@chakr
 const TeamPage = () => {
 
   const team = useSelector( (state)=>{ return state.team } );
-  const isSignedIn = useSelector( (state)=>{ return state.signin } );
+  const sessionState = useSelector( (state)=>{ return state.signin } );
   const dispatch = useDispatch();
 
   let param = useParams();
@@ -30,10 +29,10 @@ const TeamPage = () => {
     // ページ読み込み時にteamのデータを取得
     dispatch( asyncGetTeam(param.id) );
     // ログイン状態を判定
-    const accesstokenData = localStorage.getItem("access-token");
-    if( accesstokenData !== "" ){
-      dispatch( setTrue() );
-    };
+    // const accesstokenData = localStorage.getItem("access-token");
+    // if( accesstokenData !== "" ){
+    //   dispatch( setTrue() );
+    // };
   }, [] );
 
   const formatDate = (dateStr) => {
@@ -45,7 +44,7 @@ const TeamPage = () => {
 
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
-      { isSignedIn ? 
+      { sessionState.is_login ? 
         <Box>
           <HStack mb={3}>
             <Text size="sm">組織情報</Text>
