@@ -4,9 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { asyncGetCategory, asyncCreateCategory } from '../../store/categorySlice';
 
-// 非同期処理
-import axios from 'axios'
-
 // styling
 import { Box, Heading, Text, Spacer, HStack, Button, Input } from '@chakra-ui/react';
 import {
@@ -45,7 +42,7 @@ const Category = () => {
     // } );
     dispatch( asyncCreateCategory( categoryData, sessionData ) );
     onClose();
-  }
+  };
 
   return (
     <Box>
@@ -92,6 +89,9 @@ const Category = () => {
             )
           }
         } )}
+        {catData?.some((category) => category.team_id === teamData.id) === false && (
+          <Text color="gray.500" ml={5}>カテゴリがまだ登録されていません。</Text>
+        )}
       </Box>
     </Box>
   )
