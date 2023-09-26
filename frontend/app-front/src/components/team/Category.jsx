@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { asyncGetCategory, asyncCreateCategory } from '../../store/categorySlice';
 
+// route
+import { useNavigate } from "react-router-dom";
+
 // styling
 import { Box, Heading, Text, Spacer, HStack, Button, Input } from '@chakra-ui/react';
 import {
@@ -44,6 +47,8 @@ const Category = () => {
     onClose();
   };
 
+  const navigate = useNavigate();
+
   return (
     <Box>
       <HStack mb={3}>
@@ -80,8 +85,12 @@ const Category = () => {
           if( category.team_id === teamData.id ){
             return(
               <Box
-                mb={3} bgColor="gray.50" p={5} borderRadius={10}
                 key={category.id}
+                mb={3} bgColor="gray.50" p={5} borderRadius={10}
+                cursor="pointer"
+                transition="0.3s"
+                _hover={{bgColor: "gray.200"}}
+                onClick={ () => { navigate(`/team/${teamData.id}/${category.id}`) } }
               >
                 <Heading as="h4" size="sm" mb={3}>{category.name}</Heading>
                 <Text>管理文書数：</Text>

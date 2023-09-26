@@ -10,7 +10,7 @@ const categorySlice = createSlice({
   initialState: initState,
   reducers: {
     getCategory( state, { type, payload } ){
-      return [ ...payload.data ];
+      return [ ...payload ];
     },
     createCategory( state, { type, payload } ){
       const newState = [...state];
@@ -25,9 +25,9 @@ const asyncGetCategory = (payload) => {
   return( async( dispatch, getState )=>{
     const result = await axios.get("http://localhost:3000/auth/categories", { params: payload })
     .then( (res)=>{ return res.data } );
-    dispatch( getCategory( result ) )
+    dispatch( getCategory( result.data ) )
   } )
-}
+};
 
 const asyncCreateCategory = (payload, sessionData) => {
   return( async( dispatch, getState )=>{
@@ -35,7 +35,7 @@ const asyncCreateCategory = (payload, sessionData) => {
     .then( (res)=>{ return res.data } );
     dispatch( createCategory( result ) );
   } )
-}
+};
 
 export { asyncGetCategory, asyncCreateCategory };
 export default categorySlice.reducer;

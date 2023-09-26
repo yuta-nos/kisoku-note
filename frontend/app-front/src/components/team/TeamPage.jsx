@@ -60,7 +60,7 @@ const TeamPage = () => {
           <Box mb={3} bgColor="gray.50" p={5} borderRadius={10}>
             <Text fontWeight="bold">{team?.name}</Text>
           </Box>
-          <Box mb={5} bgColor="gray.50" p={5}  borderRadius={10}>        
+          <Box mb={10} bgColor="gray.50" p={5}  borderRadius={10}>        
             <Box mb={3}>
               <Text mb={3}>所属メンバー：</Text>
               {team?.users.map( (member)=>{
