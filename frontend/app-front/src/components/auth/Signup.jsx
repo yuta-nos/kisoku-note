@@ -29,9 +29,8 @@ const Signup = () => {
     try{
       await axios.post("http://localhost:3000/auth", userData)
       .then( (res)=>{ 
-        console.log(res.data);
         if( res.status === 200 ){
-          navigate('/mypage/');
+          navigate(`/mypage/${res.data.data.id}`);
           toast({
             title: 'ユーザー登録成功',
             status: 'success',
