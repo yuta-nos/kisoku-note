@@ -5,6 +5,7 @@ import Signin from "./components/auth/Signin";
 import Mypage from "./components/auth/Mypage";
 import TeamPage from "./components/team/TeamPage";
 import TeamEdit from "./components/team/TeamEdit";
+import TeamCreate from "./components/team/TeamCreate";
 import Footer from "./components/Footer";
 
 // router
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/mypage/:id" element={<Mypage />} />
         <Route path="/team/:id" element={<TeamPage />} />
         <Route path="/team/:id/edit" element={<TeamEdit />} />
+        <Route path="/team/create" element={<TeamCreate />} />
       </Routes>
       <Footer />
     </div>
