@@ -11,7 +11,7 @@ import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
 // styling
-import { Box, Heading, HStack, Spacer, VStack, Text, Button } from "@chakra-ui/react";
+import { Box, Heading, HStack, Spacer, VStack, Text, Button, Link } from "@chakra-ui/react";
 
 const Header = () => {
 
@@ -56,12 +56,20 @@ const Header = () => {
   return (
     <Box p={5} bgColor="gray.100" boxShadow="xl">
       <HStack>
-        <Heading as="h1" size="sm">kisoku note</Heading>
+        <Heading as="h1" size="sm">
+          <Link onClick={ ()=>{ navigate(`/`) } }>kisoku note</Link>
+        </Heading>
         <Spacer />
         <VStack>
           {sessionState.is_login ? 
             <HStack>
-              <Text mr={3}>{sessionState.name}</Text>
+              <Link
+                color="blue.600"
+                textDecoration="underline"
+                onClick={ ()=>{ navigate(`/mypage/${sessionState.id}`) } }
+              >
+                <Text mr={3}>{sessionState.name}</Text>
+              </Link>
               <Button
                 size="xs" bgColor="gray.300"
                 onClick={ deleteSession }

@@ -33,7 +33,13 @@ const { get, create, updateName } = teamSlice.actions;
 
 const asyncGetTeam = (payload) => {
   return( async(dispatch, getState)=>{
-    const result = await axios.get(`http://localhost:3000/teams/${payload}`)
+    const result = await axios.get(`http://localhost:3000/auth/teams/${payload.id}`, {
+      params: {
+        "access-token": payload.accesstoken,
+        "client": payload.client,
+        "uid": payload.uid
+      }
+    })
     .then( (res)=>{ return res.data } );
     dispatch( get(result) );
   } );
@@ -41,7 +47,7 @@ const asyncGetTeam = (payload) => {
 
 const asyncCreateTeam = () => {
   return( async(dispatch, getState)=>{
-    const result = await axios.post("http://localhost:3000/teams")
+    const result = await axios.post("http://localhost:3000/auth/teams")
     .then( (res)=>{ return res.data } );
     dispatch( create(result) )
   } );

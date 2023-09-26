@@ -37,6 +37,10 @@ const Mypage = () => {
       console.log(error)
     }
   }, [] );
+
+  const createTeam = () => {
+    navigate("/team/create");
+  }
   
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
@@ -84,7 +88,10 @@ const Mypage = () => {
                   :
                     <HStack>
                       <Text mr={5}>なし</Text>
-                      <Button colorScheme="teal">チームを作成する</Button>
+                      <Button
+                        colorScheme="teal"
+                        onClick={ createTeam }
+                      >チームを作成する</Button>
                     </HStack>
                   }
                   </Td>

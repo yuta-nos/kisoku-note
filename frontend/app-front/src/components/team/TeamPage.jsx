@@ -27,12 +27,13 @@ const TeamPage = () => {
 
   useEffect( ()=>{
     // ページ読み込み時にteamのデータを取得
-    dispatch( asyncGetTeam(param.id) );
-    // ログイン状態を判定
-    // const accesstokenData = localStorage.getItem("access-token");
-    // if( accesstokenData !== "" ){
-    //   dispatch( setTrue() );
-    // };
+    const paramsData = {
+      "id": param.id,
+      "accesstoken": localStorage.getItem("access-token"),
+      "client": localStorage.getItem("client"),
+      "uid": localStorage.getItem("uid")
+    }
+    dispatch( asyncGetTeam(paramsData) );
   }, [] );
 
   const formatDate = (dateStr) => {
@@ -59,7 +60,7 @@ const TeamPage = () => {
           <Box mb={3} bgColor="gray.50" p={5} borderRadius={10}>
             <Text fontWeight="bold">{team?.name}</Text>
           </Box>
-          <Box mb={5} bgColor="gray.50" p={5}  borderRadius={10}>        
+          <Box mb={10} bgColor="gray.50" p={5}  borderRadius={10}>        
             <Box mb={3}>
               <Text mb={3}>所属メンバー：</Text>
               {team?.users.map( (member)=>{
