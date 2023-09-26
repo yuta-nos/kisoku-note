@@ -27,12 +27,13 @@ const TeamPage = () => {
 
   useEffect( ()=>{
     // ページ読み込み時にteamのデータを取得
-    dispatch( asyncGetTeam(param.id) );
-    // ログイン状態を判定
-    // const accesstokenData = localStorage.getItem("access-token");
-    // if( accesstokenData !== "" ){
-    //   dispatch( setTrue() );
-    // };
+    const paramsData = {
+      "id": param.id,
+      "accesstoken": localStorage.getItem("access-token"),
+      "client": localStorage.getItem("client"),
+      "uid": localStorage.getItem("uid")
+    }
+    dispatch( asyncGetTeam(paramsData) );
   }, [] );
 
   const formatDate = (dateStr) => {
