@@ -6,6 +6,7 @@ import axios from "axios";
 const initState = {
   is_login: false,
   email: "",
+  id: "",
   name: "",
   team_name: ""
 };
@@ -19,6 +20,7 @@ const signinSlice = createSlice({
       return {...newState,
         is_login: payload.is_login,
         email: payload.data.email,
+        id: payload.data.id,
         name: payload.data.name,
         team: payload.team
       };
@@ -28,6 +30,7 @@ const signinSlice = createSlice({
       return {...newState,
         is_login: false,
         email: "",
+        id: "",
         name: "",
         team: ""
       }
