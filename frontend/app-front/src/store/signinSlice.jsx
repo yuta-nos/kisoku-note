@@ -8,6 +8,7 @@ const initState = {
   email: "",
   id: "",
   name: "",
+  created_at: "",
   team_name: ""
 };
 
@@ -22,6 +23,7 @@ const signinSlice = createSlice({
         email: payload.data.email,
         id: payload.data.id,
         name: payload.data.name,
+        created_at: payload.data.created_at,
         team: payload.team
       };
     },
@@ -32,6 +34,7 @@ const signinSlice = createSlice({
         email: "",
         id: "",
         name: "",
+        created_at: "",
         team: ""
       }
     }

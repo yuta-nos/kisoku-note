@@ -41,6 +41,11 @@ const Mypage = () => {
   const createTeam = () => {
     navigate("/team/create");
   }
+
+  const formatDate = (dateStr) => {
+    const userSignupDate = new Date(dateStr);
+    return userSignupDate.toLocaleString('ja-JP');
+  }
   
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
@@ -95,6 +100,12 @@ const Mypage = () => {
                     </HStack>
                   }
                   </Td>
+                </Tr>
+                <Tr>
+                  <Td w="30%" borderRight="1px" borderColor="gray.100" fontSize="sm">
+                    アカウント作成日時：
+                  </Td>
+                  <Td>{formatDate(userData.created_at)}</Td>
                 </Tr>
               </Tbody>
             </Table>
