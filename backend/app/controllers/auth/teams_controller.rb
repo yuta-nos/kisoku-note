@@ -8,6 +8,12 @@ class Auth::TeamsController < ApplicationController
   end
 
   def create
+    team = Team.create!(team_params)
+    if team.save
+      render status: 200, json: team
+    else
+      render status: 400, json: { data: team.errors }
+    end
   end
 
   def update
