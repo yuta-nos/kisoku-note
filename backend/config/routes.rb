@@ -6,8 +6,12 @@ Rails.application.routes.draw do
   # get 'categories/destroy'
   
   mount_devise_token_auth_for 'User', at: 'auth', controllers: {
-    registrations: 'auth/registrations'
+    registrations: 'auth/registrations',
   }
+  # ログインユーザー取得のルーティング
+  namespace :auth do
+    resources :sessions, only: [:index]
+  end
   
   resources :teams, only:[:create, :show, :update, :destroy]
 

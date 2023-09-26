@@ -2,7 +2,7 @@ import React,{ useState } from 'react'
 
 // redux
 import { useSelector, useDispatch } from "react-redux";
-import { setTrue } from '../../store/signinSlice';
+import { asyncSetSession } from '../../store/signinSlice';
 
 // 非同期処理
 import axios from "axios";
@@ -15,7 +15,7 @@ import { Box, Input, Button, Heading, Text, useToast } from "@chakra-ui/react";
 
 const Signin = () => {
 
-  const isSignedIn = useSelector( (state)=>{ return state.signin } );
+  const sessionState = useSelector( (state)=>{ return state.signin } );
   const dispatch = useDispatch();
 
   const [inputEmail, setInputEmail] = useState();
@@ -48,7 +48,12 @@ const Signin = () => {
           localStorage.setItem("uid", uid);
 
           // status変更
-          dispatch(setTrue());
+          const sessionInfo = {
+            "access-token":accesstoken,
+            "client": client,
+            "uid": uid
+          }
+          dispatch(asyncSetSession(sessionInfo));
 
           // 遷移設定
           navigate(`/mypage/${userId}`, { state: res.data });

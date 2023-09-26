@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react'
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { setTrue, setFalse } from '../store/signinSlice';
+import { asyncSetSession, asyncDeleteSession } from "../store/signinSlice";
+
+// 非同期処理
+import axios from 'axios';
 
 // route
 import { useNavigate } from "react-router-dom";
@@ -12,31 +15,42 @@ import { Box, Heading, HStack, Spacer, VStack, Text, Button } from "@chakra-ui/r
 
 const Header = () => {
 
-  const isSignedIn = useSelector( (state)=>{ return state.signin } );
+  const sessionState = useSelector( (state)=>{ return state.signin } );
   const dispatch = useDispatch();
 
-  const [accessToken, setAccessToken] = useState();
-  const [client, setClient] = useState();
-  const [uid, setUid] = useState();
-
   useEffect( ()=>{
-    const accesstoken = localStorage.getItem("access-token");
-    const client = localStorage.getItem("client");
-    const uid = localStorage.getItem("uid");
-    console.log(accesstoken, client, uid);
-    if( accesstoken !== "" && client !== "" && uid !== "" ){
-      setUid(uid);
+    const currentUserData = {
+      "access-token": localStorage.getItem("access-token"),
+      "client": localStorage.getItem("client"),
+      "uid": localStorage.getItem("uid")
     }
-  }, [isSignedIn] )
+    console.log(currentUserData)
+    try{
+      dispatch( asyncSetSession(currentUserData) );
+    }
+    catch(error) {
+      console.log(error)
+    }
+  }, [] )
 
   const navigate = useNavigate();
 
   const deleteSession = () => {
+    const sessionData = {
+      "access-token": localStorage.getItem("access-token"),
+      "client": localStorage.getItem("client"),
+      "uid": localStorage.getItem("uid")
+    };
+    // axios.delete("http://localhost:3000/auth/sign_out", { params: sessionData })
+    // .then( (res)=>{
+    //   console.log(res.data);
+    //   navigate("/");
+    // } );
+    dispatch( asyncDeleteSession(sessionData) );
     localStorage.setItem("access-token", "");
     localStorage.setItem("client", "");
     localStorage.setItem("uid", "");
-    navigate("/mypage/1");
-    dispatch( setFalse() );
+    navigate("/");
   }
 
   return (
@@ -45,20 +59,22 @@ const Header = () => {
         <Heading as="h1" size="sm">kisoku note</Heading>
         <Spacer />
         <VStack>
-          { isSignedIn ? 
+          {sessionState.is_login ? 
             <HStack>
-              <Text mr={3}>{uid}</Text>
+              <Text mr={3}>{sessionState.name}</Text>
               <Button
                 size="xs" bgColor="gray.300"
                 onClick={ deleteSession }
               >ログアウト</Button>
             </HStack>
-            :
-            <Button 
-              size="xs"
-              bgColor="gray.300"
-              onClick={ ()=>{ navigate("/signin") } }
-            >ログイン</Button>
+          :
+            <Box>
+              <Button 
+                size="xs"
+                bgColor="gray.300"
+                onClick={ ()=>{ navigate("/signin") } }
+              >ログイン</Button>
+            </Box>
           }
         </VStack>
       </HStack>
