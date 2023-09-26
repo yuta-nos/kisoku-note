@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Signout from './Signout';
 
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { asyncSetSession } from '../../store/signinSlice';
+
 // route
 import { useNavigate } from 'react-router-dom'
 
@@ -15,7 +19,10 @@ const Mypage = () => {
 
   const navigate = useNavigate();
 
-  const [ userData, setUserData ] = useState("");
+  // const [ userData, setUserData ] = useState("");
+
+  const userData = useSelector( (state)=>{ return state.signin } )
+  const dispatch = useDispatch();
 
   useEffect( ()=>{
     const currentUserData = {
@@ -24,12 +31,7 @@ const Mypage = () => {
       "uid": localStorage.getItem("uid")
     }
     try{
-      const getCurrentUser = async() => {
-        const result = await axios.get("http://localhost:3000/auth/sessions", { params: currentUserData })
-        .then( (res)=>{ console.log(res.data); return res.data } );
-        setUserData(result);
-      }
-      getCurrentUser();
+      dispatch( asyncSetSession( currentUserData ) );
     }
     catch(error) {
       console.log(error)
@@ -54,8 +56,8 @@ const Mypage = () => {
                   <Td
                     w="30%" borderRight="1px" borderColor="gray.100" fontSize="sm"
                   >名前：</Td>
-                  {userData.data.name ?
-                    <Td>{userData.data.name}</Td>
+                  {userData.name ?
+                    <Td>{userData.name}</Td>
                     :
                     <Td>未登録</Td>
                   }
@@ -64,7 +66,7 @@ const Mypage = () => {
                   <Td
                     w="30%" borderRight="1px" borderColor="gray.100" fontSize="sm"
                   >メールアドレス：</Td>
-                  <Td>{userData.data.email}</Td>
+                  <Td>{userData.email}</Td>
                 </Tr>
                 <Tr>
                   <Td

@@ -47,6 +47,9 @@ const Header = () => {
     //   navigate("/");
     // } );
     dispatch( asyncDeleteSession(sessionData) );
+    localStorage.setItem("access-token", "");
+    localStorage.setItem("client", "");
+    localStorage.setItem("uid", "");
     navigate("/");
   }
 
