@@ -1,4 +1,7 @@
-class TeamsController < ApplicationController
+class Auth::TeamsController < ApplicationController
+
+  before_action :authenticate_user!
+
   def show
     team = Team.find(params[:id])
     render status: 200, json: team, serializer: TeamSerializer
