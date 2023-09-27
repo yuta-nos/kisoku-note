@@ -10,12 +10,38 @@ import { store } from "./store/index";
 import { BrowserRouter } from "react-router-dom";
 
 // styling
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+
+const theme = extendTheme({
+  styles: {
+    global: {
+      h1: {
+        fontSize: "2em",
+        fontWeight: "bold"
+      },
+      h2: {
+        fontSize: "1.5em",
+        fontWeight: "bold"
+      },
+      h3: {
+        fontSize: "1.17em",
+        fontWeight: "bold"
+      },
+      h4: {
+        fontWeight: "bold"
+      },
+      h5: {
+        fontSize: "0.83em",
+        fontWeight: "bold"
+      }
+    }
+  }
+})
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
