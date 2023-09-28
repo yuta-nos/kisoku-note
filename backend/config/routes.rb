@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     # auth配下に配置、devise_token_authの機能を使用可能に
     resources :teams, only:[:create, :show, :update, :destroy]
     resources :categories
+    resources :documents
   end
   
 end

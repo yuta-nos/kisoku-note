@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  doc_num: 1
+  title: MyString
+  body: MyString
+  category_id: 1
+  version: 1
+  reason: MyString
+
+two:
+  doc_num: 1
+  title: MyString
+  body: MyString
+  category_id: 1
+  version: 1
+  reason: MyString
