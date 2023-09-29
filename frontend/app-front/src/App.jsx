@@ -6,7 +6,10 @@ import Mypage from "./components/auth/Mypage";
 import TeamPage from "./components/team/TeamPage";
 import TeamEdit from "./components/team/TeamEdit";
 import TeamCreate from "./components/team/TeamCreate";
+import TextEditor from "./components/document/TextEditor";
 import DocumentsIndex from "./components/document/DocumentsIndex";
+import NewDocument from "./components/document/NewDocument";
+import DocumentPage from "./components/document/DocumentPage";
 import Footer from "./components/Footer";
 
 // router
@@ -25,7 +28,10 @@ const App = () => {
         <Route path="/team/create" element={<TeamCreate />} />
         <Route path="/team/:id" element={<TeamPage />} />
         <Route path="/team/:id/edit" element={<TeamEdit />} />
-        <Route path="/team/:id/:category" element={<DocumentsIndex />} />
+        <Route path="/team/:id/category/:category" element={<DocumentsIndex />} />
+        <Route path="/document" element={<TextEditor />} />
+        <Route path="/new-document" element={<NewDocument />} />
+        <Route path="/document/:id" element={<DocumentPage />} />
       </Routes>
       <Footer />
     </div>
