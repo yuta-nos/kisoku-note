@@ -7,7 +7,7 @@ class Auth::CategoriesController < ApplicationController
 
   def show
     category = Category.find(params[:id])
-    render status: 200, json: { data: category }
+    render status: 200, json: category, serializer: CategorySerializer
   end
 
   def create
