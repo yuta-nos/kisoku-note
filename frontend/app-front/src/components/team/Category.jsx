@@ -90,7 +90,7 @@ const Category = () => {
                 cursor="pointer"
                 transition="0.3s"
                 _hover={{bgColor: "gray.200"}}
-                onClick={ () => { navigate(`/team/${teamData.id}/${category.id}`) } }
+                onClick={ () => { navigate(`/team/${teamData.id}/category/${category.id}`) } }
               >
                 <Heading as="h4" size="sm" mb={3}>{category.name}</Heading>
                 <Text>管理文書数：</Text>
