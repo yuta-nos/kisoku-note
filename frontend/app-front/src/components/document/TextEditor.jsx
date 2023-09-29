@@ -8,7 +8,7 @@ import 'draft-js/dist/Draft.css';
 import { useSelector } from "react-redux";
 
 // route
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 // 非同期処理
 import axios from 'axios';
@@ -26,7 +26,9 @@ const TextEditor = ({location}) => {
   );
 
   const params = useParams();
-  // console.log(params)
+  console.log(params)
+
+  const navigate = useNavigate();
 
   // どのページに属しているエディタなのかを判定するために必要な値
   // console.log(location);
@@ -70,7 +72,10 @@ const TextEditor = ({location}) => {
       "category_id": location.state.category,
       "version": 1,
       "reason": "新規作成"
-    }).then( (res)=>{ console.log(res.data); return res.data; } );
+    }).then( (res)=>{
+      console.log(res.data);
+      navigate(`/team/${user.team.id}/category/${location.state.category}`);
+    } );
   }
 
   // 文書更新
