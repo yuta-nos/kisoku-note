@@ -32,7 +32,7 @@ const App = () => {
         <Route path="/team/:id/category/:category" element={<DocumentsIndex />} />
         <Route path="/document" element={<TextEditor />} />
         <Route path="/new-document" element={<NewDocument />} />
-        <Route path="/document/:id" element={<DocumentPage />} />
+        <Route path="/document/:id/ver/:version" element={<DocumentPage />} />
       </Routes>
       </div>
       <Footer />

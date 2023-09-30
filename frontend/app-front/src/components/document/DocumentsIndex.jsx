@@ -47,20 +47,31 @@ const DocumentsIndex = () => {
         {targetCat?.documents
           .sort((a, b) => a.id - b.id)
           .map( (document)=>{
-          return(
-            <Box
-              key={document.id}
-              bgColor="gray.100"
-              p={5}
-              m={3}
-              cursor="pointer"
-              transition="0.3s"
-              _hover={{bgColor: "gray.200"}}
-              onClick={ () => { navigate(`/document/${document.doc_num}`, { state: document }) } }
-            >
-              <Text>{document.title}</Text>
-            </Box>
-          )
+            const thisDocVers = targetCat?.versions.filter( (ver)=>{
+              return ver.document_id === document.id;
+            } )
+            return(
+              <Box
+                key={document.id}
+                bgColor="gray.50"
+                p={5}
+                m={3}
+              >
+                <Text mb={5}>{document.title}</Text>
+                {thisDocVers.map( (ver)=>{
+                  return(
+                    <Button
+                      key={ver.id}
+                      bgColor="blue.200"
+                      transition="0.3s"
+                      onClick={ () => {
+                        navigate(`/document/${document.doc_num}/ver/${ver.number}`, { state: document })
+                      } }
+                    >バージョン{ver.number}</Button>
+                  )
+                } )}
+              </Box>
+            )
         } )}
         { targetCat?.documents.length === 0 ? 
           <Text color="gray.500">まだ文書が登録されていません</Text>

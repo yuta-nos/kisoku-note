@@ -1,3 +1,3 @@
 class CategorySerializer < ActiveModel::Serializer
-  attributes :id, :name, :documents
+  attributes :id, :name, :documents, :versions
 end

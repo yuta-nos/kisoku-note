@@ -45,7 +45,7 @@ const TextEditor = ({location}) => {
       axios.get(`http://localhost:3000/auth/documents/${params.id}`)
       .then( (res)=>{
         console.log(res.data)
-        const raw = res.data.versions[0].body;
+        const raw = res.data.versions[params.version - 1].body;
         const title = res.data.title;
         console.log(raw);
         console.log(title);
@@ -53,7 +53,6 @@ const TextEditor = ({location}) => {
         const newEditorState = EditorState.createWithContent(contentState);
         setEditorState(newEditorState);
         setInputTitle(title);
-        setVerID(res.data.versions[0].id);
       } );
     }
     if(location.pathname !== "/new-document"){
@@ -109,7 +108,7 @@ const TextEditor = ({location}) => {
       // "body": jsonData
     }).then( (res)=>{
       console.log(res.data)
-      axios.put(`http://localhost:3000/auth/versions/${verID}`,{
+      axios.put(`http://localhost:3000/auth/versions/${params.version}`,{
         "body": jsonData
       })
       setReadOnly(true);
