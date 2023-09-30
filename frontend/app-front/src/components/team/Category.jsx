@@ -17,7 +17,9 @@ import {
 const Category = () => {
 
   const teamData = useSelector( (state)=>{ return state.team } );
+  console.log("teamData", teamData);
   const catData = useSelector( (state)=>{ return state.category } );
+  console.log(catData);
   const dispatch = useDispatch();
 
   const sessionData = {
@@ -81,22 +83,23 @@ const Category = () => {
       </Modal>
 
       <Box>
-        {catData?.map( (category)=>{
-          if( category.team_id === teamData.id ){
-            return(
-              <Box
-                key={category.id}
-                mb={3} bgColor="gray.50" p={5} borderRadius={10}
-                cursor="pointer"
-                transition="0.3s"
-                _hover={{bgColor: "gray.200"}}
-                onClick={ () => { navigate(`/team/${teamData.id}/category/${category.id}`) } }
-              >
-                <Heading as="h4" size="sm" mb={3}>{category.name}</Heading>
-                <Text>管理文書数：</Text>
-              </Box>
-            )
-          }
+        {teamData?.categories?.map( (category)=>{
+          const thisCatDocs = teamData.documents.filter( (doc)=>{
+            return doc.category_id === category.id;
+          } )
+          return(
+            <Box
+              key={category.id}
+              mb={3} bgColor="gray.50" p={5} borderRadius={10}
+              cursor="pointer"
+              transition="0.3s"
+              _hover={{bgColor: "gray.200"}}
+              onClick={ () => { navigate(`/team/${teamData.id}/category/${category.id}`) } }
+            >
+              <Heading as="h4" size="sm" mb={3}>{category.name}</Heading>
+              <Text>管理文書数：{thisCatDocs.length}</Text>
+            </Box>
+          )
         } )}
         {catData?.some((category) => category.team_id === teamData.id) === false && (
           <Text color="gray.500" ml={5}>カテゴリがまだ登録されていません。</Text>
