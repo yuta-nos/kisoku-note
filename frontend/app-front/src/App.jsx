@@ -20,6 +20,7 @@ const App = () => {
   return (
     <div className="App">
       <Header />
+      <div style={{minHeight:"calc(100vh-100px)"}}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/new-document" element={<NewDocument />} />
         <Route path="/document/:id" element={<DocumentPage />} />
       </Routes>
+      </div>
       <Footer />
     </div>
   )
