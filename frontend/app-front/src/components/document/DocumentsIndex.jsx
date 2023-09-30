@@ -62,6 +62,11 @@ const DocumentsIndex = () => {
             </Box>
           )
         } )}
+        { targetCat?.documents.length === 0 ? 
+          <Text color="gray.500">まだ文書が登録されていません</Text>
+        :
+          <Text></Text>
+        }
       </Box>
     </Box>
   )
