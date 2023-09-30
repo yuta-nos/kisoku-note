@@ -17,7 +17,7 @@ import axios from 'axios';
 import { UUID } from "uuidjs";
 
 // styling
-import { Box, Button, Heading, HStack, Input } from "@chakra-ui/react";
+import { Box, Button, Heading, HStack, Input, Select } from "@chakra-ui/react";
 
 const TextEditor = ({location}) => {
 
@@ -26,14 +26,14 @@ const TextEditor = ({location}) => {
   );
 
   const params = useParams();
-  console.log(params)
+  // console.log(params)
 
   const navigate = useNavigate();
 
   // どのページに属しているエディタなのかを判定するために必要な値
   // console.log(location);
 
-  // 文書データ取得用（新規作成時は適用しない）
+  // 文書データ取得用
   useEffect( ()=>{
     const getDocContent = async() => {
       axios.get(`http://localhost:3000/auth/documents/${params.id}`)
@@ -49,7 +49,11 @@ const TextEditor = ({location}) => {
       } );
     }
     if(location.pathname !== "/new-document"){
+      // 新規作成ページではない場合
       getDocContent();
+    } else {
+      // 新規作成ページの場合
+      setReadOnly(false);
     }
   }, [] )
 
@@ -86,7 +90,7 @@ const TextEditor = ({location}) => {
     await axios.put(`http://localhost:3000/auth/documents/${params.id}`,{
       "title": inputTitle,
       "body": jsonData
-    })
+    }).then( ()=>{ setReadOnly(true) } )
   }
 
   const toggleBold = (e) => {
@@ -120,58 +124,84 @@ const TextEditor = ({location}) => {
 
   const [inputTitle, setInputTitle] = useState("");
 
+  const [ readOnly, setReadOnly ] = useState(true);
+
   return (
-    <Box maxW="750px" my={6} mx="auto" p={3} >
-      <Input placeholder='タイトル' value={inputTitle} onChange={(e)=>{ setInputTitle(e.target.value) }} />
-      <HStack mt={5}>
-        { location.pathname === "/new-document" ?
-          <Button
-            onClick={saveContent}
-            borderRadius="10px 10px 0 0"
-            bgColor="red.100"
-          >保存</Button>
-        :
-          <Button
-            onClick={updateContent}
-            borderRadius="10px 10px 0 0"
-            bgColor="red.100"
-          >更新</Button>
-        }
-        
-        <Button
-          onClick={toggleBold}
-          borderRadius="10px 10px 0 0"
-        >太字</Button>
-        <Button
-          onClick={toggleItalic}
-          borderRadius="10px 10px 0 0"
-        >イタリック</Button>
-        <Button
-          onClick={toggleH1}
-          borderRadius="10px 10px 0 0"
-          bgColor="blue.100"
-        >H1</Button>
-        <Button
-          onClick={toggleH2}
-          borderRadius="10px 10px 0 0"
-          bgColor="blue.100"
-        >H2</Button>
-        <Button
-          onClick={toggleH3}
-          borderRadius="10px 10px 0 0"
-          bgColor="blue.100"
-        >H3</Button>
-        <Button
-          onClick={toggleH4}
-          borderRadius="10px 10px 0 0"
-          bgColor="blue.100"
-        >H4</Button>
-        <Button
-          onClick={toggleH5}
-          borderRadius="10px 10px 0 0"
-          bgColor="blue.100"
-        >H5</Button>
-      </HStack>
+    <Box>
+      { readOnly ? 
+        <Button my={5} onClick={ ()=>{ setReadOnly( !readOnly ) } }>編集する</Button>
+      :
+        <HStack my={5}>
+          { location.pathname === "/new-document" ?
+            <Button
+              onClick={saveContent}
+              bgColor="red.100"
+            >保存</Button>
+          :
+            <HStack spacing="3px">
+              <Button
+                onClick={updateContent}
+                bgColor="red.100"
+                borderRadius="10px 0 0 10px"
+
+              >更新</Button>
+              <Button
+                onClick={ ()=>{ setReadOnly(true) } }
+                borderRadius="0 10px 10px 0"
+              >中止</Button>
+            </HStack>
+          }
+          <HStack spacing="3px">
+            <Button
+              onClick={toggleBold}
+              borderRadius="10px 0 0 10px"
+              fontSize="0.8em"
+            >太字</Button>
+            <Button
+              onClick={toggleItalic}
+              borderRadius="0"
+              fontSize="0.7em"
+            >イタリック</Button>
+            <Button
+                onClick={toggleH5}
+                borderRadius="0 10px 10px 0"
+                style={{textDecoration:"underline"}}
+                fontSize="0.8em"
+              >下線</Button>
+          </HStack>
+          <HStack spacing="3px">
+            <Button
+              onClick={toggleH1}
+              borderRadius="10px 0 0 10px"
+            >H1</Button>
+            <Button
+              onClick={toggleH2}
+              borderRadius={0}
+            >H2</Button>
+            <Button
+              onClick={toggleH3}
+              borderRadius={0}
+            >H3</Button>
+            <Button
+              onClick={toggleH4}
+              borderRadius={0}
+            >H4</Button>
+            <Button
+              onClick={toggleH5}
+              borderRadius="0 10px 10px 0"
+            >H5</Button>
+          </HStack>
+        </HStack>
+      }
+      <Input
+        fontSize="xl"
+        fontWeight="bold"
+        py={6} mb={5}
+        placeholder='タイトル'
+        value={inputTitle}
+        onChange={(e)=>{ setInputTitle(e.target.value) }}
+        readOnly={readOnly}
+      />
       <Box
         mb={5} p={3} minH="300px"
         border="1px" borderColor="gray.200" borderRadius={5}
@@ -180,6 +210,7 @@ const TextEditor = ({location}) => {
           editorState={editorState}
           onChange={setEditorState}
           placeholder="ここから入力"
+          readOnly={readOnly}
         />
       </Box>
     </Box>

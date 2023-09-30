@@ -12,7 +12,7 @@ const DocumentPage = () => {
   const location = useLocation();
 
   return (
-    <Box>
+    <Box maxW="750px" my={12} mx="auto" p={3}>
       <TextEditor location={location} />
     </Box>
   )
