@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 // styling
-import { Box, Heading, Text, Button } from '@chakra-ui/react'
+import { Box, Heading, Text, Button, VStack, HStack } from '@chakra-ui/react'
 
 const DocumentsIndex = () => {
 
@@ -36,6 +36,11 @@ const DocumentsIndex = () => {
     navigate("/new-document", { state: params } );
   }
 
+  const formatDate = (dateStr) => {
+    const teamSignupDate = new Date(dateStr);
+    return teamSignupDate.toLocaleDateString('ja-JP');
+  }
+
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
       <Heading as="h3" size="md" mb={5}>「{targetCat?.name}」文書一覧</Heading>
@@ -53,23 +58,31 @@ const DocumentsIndex = () => {
             return(
               <Box
                 key={document.id}
-                bgColor="gray.50"
+                bgColor="gray.100"
                 p={5}
                 m={3}
               >
-                <Text mb={5}>{document.title}</Text>
-                {thisDocVers.map( (ver)=>{
-                  return(
-                    <Button
-                      key={ver.id}
-                      bgColor="blue.200"
-                      transition="0.3s"
-                      onClick={ () => {
-                        navigate(`/document/${document.doc_num}/ver/${ver.number}`, { state: document })
-                      } }
-                    >バージョン{ver.number}</Button>
-                  )
-                } )}
+                <Heading as="h3" size="sm" my={3}>
+                  {document.title}
+                </Heading>
+                <VStack align="left">
+                  {thisDocVers.map( (ver)=>{
+                    return(
+                      <HStack key={ver.id} my={2}>
+                        <Button
+                          bgColor="blue.100"
+                          mr={5}
+                          transition="0.3s"
+                          _hover={{bgColor: "blue.200"}}
+                          onClick={ () => {
+                            navigate(`/document/${document.doc_num}/ver/${ver.number}`, { state: document })
+                          } }
+                        >バージョン{ver.number}</Button>
+                        <Text>作成日：{formatDate(ver.created_at)}</Text>
+                      </HStack>
+                    )
+                  } )}
+                </VStack>
               </Box>
             )
         } )}

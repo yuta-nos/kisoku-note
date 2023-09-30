@@ -37,7 +37,7 @@ const TextEditor = ({location}) => {
   // どのページに属しているエディタなのかを判定するために必要な値
   // console.log(location);
 
-  const [verID, setVerID] = useState();
+  const [docID, setDocID] = useState();
 
   // 文書データ取得用
   useEffect( ()=>{
@@ -47,12 +47,13 @@ const TextEditor = ({location}) => {
         console.log(res.data)
         const raw = res.data.versions[params.version - 1].body;
         const title = res.data.title;
-        console.log(raw);
-        console.log(title);
+        // console.log(raw);
+        // console.log(title);
         const contentState = convertFromRaw(JSON.parse(raw));
         const newEditorState = EditorState.createWithContent(contentState);
         setEditorState(newEditorState);
         setInputTitle(title);
+        setDocID(res.data.id);
       } );
     }
     if(location.pathname !== "/new-document"){
@@ -118,20 +119,18 @@ const TextEditor = ({location}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   // // バージョン更新
-  // const updateVersion = async() => {
-  //   // console.log(versionUpReason);
-  //   const contentState = editorState.getCurrentContent();
-  //   const raw = convertToRaw(contentState);
-  //   const jsonData = JSON.stringify(raw, null, 2);
-  //   await axios.post(`http://localhost:3000/auth/documents`,{
-  //     "doc_num": params.id,
-  //     "title": inputTitle,
-  //     "body": jsonData,
-  //     "category_id": location.state.category_id,
-  //     "version": verNum + 1,
-  //     "reason": versionUpReason
-  //   }).then( (res)=>{ console.log(res.data) } )
-  // }
+  const updateVersion = async() => {
+    const contentState = editorState.getCurrentContent();
+    const raw = convertToRaw(contentState);
+    const jsonData = JSON.stringify(raw, null, 2);
+    console.log(docID)
+    await axios.post(`http://localhost:3000/auth/versions`,{
+      "document_id": docID,
+      "body": jsonData,
+      "number": parseInt(params.version) + 1,
+      "reason": versionUpReason
+    }).then( (res)=>{ console.log(res.data) } )
+  }
 
   const toggleBold = (e) => {
     e.preventDefault();
@@ -213,7 +212,7 @@ const TextEditor = ({location}) => {
               <ModalFooter>
                 <Button
                   mr={3} colorScheme="red"
-                  // onClick={updateVersion}
+                  onClick={updateVersion}
                 >バージョン更新</Button>
                 <Button onClick={onClose}>
                   Close
