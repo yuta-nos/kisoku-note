@@ -1,12 +1,14 @@
 class Auth::DocumentsController < ApplicationController
 
   def index
-    
+    # 確認用
+    documents = Document.all
+    render json: documents
   end
 
   def show
-    documents = Document.where(doc_num: params[:id])
-    render status: 200, json: { data: documents }
+    document = Document.find_by(doc_num: params[:id])
+    render status: 200, json: document, serializer: DocumentSerializer
   end
 
   def create

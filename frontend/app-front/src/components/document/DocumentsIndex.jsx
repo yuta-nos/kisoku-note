@@ -56,7 +56,7 @@ const DocumentsIndex = () => {
               cursor="pointer"
               transition="0.3s"
               _hover={{bgColor: "gray.200"}}
-              onClick={ () => { navigate(`/document/${document.doc_num}`) } }
+              onClick={ () => { navigate(`/document/${document.doc_num}`, { state: document }) } }
             >
               <Text>{document.title}</Text>
             </Box>

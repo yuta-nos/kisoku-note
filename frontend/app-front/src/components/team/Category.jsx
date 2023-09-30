@@ -17,9 +17,7 @@ import {
 const Category = () => {
 
   const teamData = useSelector( (state)=>{ return state.team } );
-  console.log("teamData", teamData);
   const catData = useSelector( (state)=>{ return state.category } );
-  console.log(catData);
   const dispatch = useDispatch();
 
   const sessionData = {

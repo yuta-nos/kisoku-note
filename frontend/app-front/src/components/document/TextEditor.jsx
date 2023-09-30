@@ -17,7 +17,11 @@ import axios from 'axios';
 import { UUID } from "uuidjs";
 
 // styling
-import { Box, Button, Heading, HStack, Input, Select } from "@chakra-ui/react";
+import { Box, Button, HStack, Input, Textarea } from "@chakra-ui/react";
+import {
+  useDisclosure,
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
+} from '@chakra-ui/react';
 
 const TextEditor = ({location}) => {
 
@@ -33,19 +37,23 @@ const TextEditor = ({location}) => {
   // どのページに属しているエディタなのかを判定するために必要な値
   // console.log(location);
 
+  const [verID, setVerID] = useState();
+
   // 文書データ取得用
   useEffect( ()=>{
     const getDocContent = async() => {
       axios.get(`http://localhost:3000/auth/documents/${params.id}`)
-      .then( (arry)=>{
-        const raw = arry.data.data[0].body;
-        const title = arry.data.data[0].title;
+      .then( (res)=>{
+        console.log(res.data)
+        const raw = res.data.versions[0].body;
+        const title = res.data.title;
         console.log(raw);
         console.log(title);
         const contentState = convertFromRaw(JSON.parse(raw));
         const newEditorState = EditorState.createWithContent(contentState);
         setEditorState(newEditorState);
         setInputTitle(title);
+        setVerID(res.data.versions[0].id);
       } );
     }
     if(location.pathname !== "/new-document"){
@@ -66,19 +74,28 @@ const TextEditor = ({location}) => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
-    console.log(jsonData);
+    // console.log(jsonData);
     const ID = UUID.generate();
-    console.log(ID);
+    // console.log(ID);
     await axios.post("http://localhost:3000/auth/documents", {
       "doc_num": ID,
       "title": inputTitle,
-      "body": jsonData,
+      // "body": jsonData,
       "category_id": location.state.category,
-      "version": 1,
-      "reason": "新規作成"
+      // "version": 1,
+      // "reason": "新規作成"
     }).then( (res)=>{
-      console.log(res.data);
-      navigate(`/team/${user.team.id}/category/${location.state.category}`);
+      console.log("documents:", res.data);
+      // ここでversionのデータを作成
+      axios.post("http://localhost:3000/auth/versions", {
+        "document_id": res.data.data.id,
+        "number": 1,
+        "body": jsonData,
+        "reason": "新規作成"
+      }).then( (res)=>{
+        console.log("versions:",res.data);
+        navigate(`/team/${user.team.id}/category/${location.state.category}`);
+      } );
     } );
   }
 
@@ -88,10 +105,34 @@ const TextEditor = ({location}) => {
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
     await axios.put(`http://localhost:3000/auth/documents/${params.id}`,{
-      "title": inputTitle,
-      "body": jsonData
-    }).then( ()=>{ setReadOnly(true) } )
+      "title": inputTitle
+      // "body": jsonData
+    }).then( (res)=>{
+      console.log(res.data)
+      axios.put(`http://localhost:3000/auth/versions/${verID}`,{
+        "body": jsonData
+      })
+      setReadOnly(true);
+    } )
   }
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // // バージョン更新
+  // const updateVersion = async() => {
+  //   // console.log(versionUpReason);
+  //   const contentState = editorState.getCurrentContent();
+  //   const raw = convertToRaw(contentState);
+  //   const jsonData = JSON.stringify(raw, null, 2);
+  //   await axios.post(`http://localhost:3000/auth/documents`,{
+  //     "doc_num": params.id,
+  //     "title": inputTitle,
+  //     "body": jsonData,
+  //     "category_id": location.state.category_id,
+  //     "version": verNum + 1,
+  //     "reason": versionUpReason
+  //   }).then( (res)=>{ console.log(res.data) } )
+  // }
 
   const toggleBold = (e) => {
     e.preventDefault();
@@ -124,6 +165,8 @@ const TextEditor = ({location}) => {
 
   const [inputTitle, setInputTitle] = useState("");
 
+  const [versionUpReason, setVersionUpReason] = useState();
+
   const [ readOnly, setReadOnly ] = useState(true);
 
   return (
@@ -143,14 +186,42 @@ const TextEditor = ({location}) => {
                 onClick={updateContent}
                 bgColor="red.100"
                 borderRadius="10px 0 0 10px"
-
               >更新</Button>
+              <Button
+                onClick={ onOpen }
+                bgColor="red.100"
+                borderRadius={0}
+              >Ver.更新</Button>
               <Button
                 onClick={ ()=>{ setReadOnly(true) } }
                 borderRadius="0 10px 10px 0"
-              >中止</Button>
+              >完了</Button>
             </HStack>
           }
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>更新理由</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Textarea
+                  placeholder='ここに更新理由を記載'
+                  height="300px"
+                  onChange={ (e)=>{ setVersionUpReason(e.target.value) } }
+                />
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  mr={3} colorScheme="red"
+                  // onClick={updateVersion}
+                >バージョン更新</Button>
+                <Button onClick={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
           <HStack spacing="3px">
             <Button
               onClick={toggleBold}

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :teams, only:[:create, :show, :update, :destroy]
     resources :categories
     resources :documents
+    resources :versions
   end
   
 end
