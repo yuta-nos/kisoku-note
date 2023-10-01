@@ -43,9 +43,9 @@ const TextEditor = ({location}) => {
   // 文書データ取得用
   useEffect( ()=>{
     const getDocContent = async() => {
-      axios.get(`http://localhost:3000/auth/documents/${params.id}`)
+      await axios.get(`http://localhost:3000/auth/documents/${params.id}`)
       .then( (res)=>{
-        console.log(res.data)
+        // console.log(res.data)
         const raw = res.data.versions[params.version - 1].body;
         const title = res.data.title;
         // console.log(raw);
@@ -68,7 +68,7 @@ const TextEditor = ({location}) => {
 
   // logined_user取得（後でauthorを付与するため）
   const user = useSelector( (state)=>{ return state.signin } );
-  console.log(user);
+  // console.log(user);
   
   // 文書保存
   const saveContent = async() => {
