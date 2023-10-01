@@ -14,7 +14,7 @@ const DocumentsIndex = () => {
   const params = useParams();
 
   const sessionData = {
-    "accesstoken": localStorage.getItem("access-token"),
+    "access-token": localStorage.getItem("access-token"),
     "client": localStorage.getItem("client"),
     "uid": localStorage.getItem("uid")
   }
