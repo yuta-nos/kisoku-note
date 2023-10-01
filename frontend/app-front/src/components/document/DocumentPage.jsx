@@ -23,9 +23,12 @@ const DocumentPage = () => {
     const getVersionData = async() => {
       await axios.get(`http://localhost:3000/auth/documents/${params.id}`)
       .then( (res)=>{
-        const verData = res.data.versions[params.version - 1].reason;
-        console.log(verData)
-        const lines = verData.split('\n'); //改行を変換
+        console.log("from useEffect", res.data.versions)
+        const verData = res.data.versions.filter( (ver)=>{
+          return ver.number == parseInt(params.version)
+        } )
+        console.log("verデータ", verData)
+        const lines = verData[0].reason?.split('\n'); //改行を変換
         setReason(lines);
       } )
     }
