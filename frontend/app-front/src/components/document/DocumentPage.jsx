@@ -19,9 +19,16 @@ const DocumentPage = () => {
 
   const [ reason, setReason ] = useState();
 
+  // session取得
+  const sessionData = {
+    "access-token": localStorage.getItem("access-token"),
+    "client": localStorage.getItem("client"),
+    "uid": localStorage.getItem("uid")
+  };
+
   useEffect( ()=>{
     const getVersionData = async() => {
-      await axios.get(`http://localhost:3000/auth/documents/${params.id}`)
+      await axios.get(`http://localhost:3000/auth/documents/${params.id}`, { headers: sessionData })
       .then( (res)=>{
         console.log("from useEffect", res.data.versions)
         const verData = res.data.versions.filter( (ver)=>{

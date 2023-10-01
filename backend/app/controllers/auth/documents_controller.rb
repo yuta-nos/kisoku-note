@@ -1,4 +1,5 @@
 class Auth::DocumentsController < ApplicationController
+  before_action :authenticate_user!
 
   def index
     # 確認用

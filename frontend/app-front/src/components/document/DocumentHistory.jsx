@@ -18,9 +18,16 @@ const DocumentHistory = () => {
   const [ verData, setVerData ] = useState();
   const [ docName, setDocName ] = useState();
 
+  // session取得
+  const sessionData = {
+    "access-token": localStorage.getItem("access-token"),
+    "client": localStorage.getItem("client"),
+    "uid": localStorage.getItem("uid")
+  };
+
   useEffect( ()=>{
     const getDocumentData = async() => {
-      await axios.get(`http://localhost:3000/auth/documents/${params.id}`)
+      await axios.get(`http://localhost:3000/auth/documents/${params.id}`, { headers: sessionData })
       .then( (res)=>{
         console.log(res.data);
         setVerData(res.data.versions);

@@ -36,7 +36,7 @@ const TextEditor = ({location}) => {
   const navigate = useNavigate();
 
   // どのページに属しているエディタなのかを判定するために必要な値
-  console.log(location);
+  // console.log(location);
 
   // logined_user取得（後でauthorを付与するため）
   const user = useSelector( (state)=>{ return state.signin } );
@@ -44,10 +44,17 @@ const TextEditor = ({location}) => {
 
   const [docData, setDocData] = useState();
 
+  // session取得
+  const sessionData = {
+    "access-token": localStorage.getItem("access-token"),
+    "client": localStorage.getItem("client"),
+    "uid": localStorage.getItem("uid")
+  };
+
   // 文書データ取得用
   useEffect( ()=>{
     const getDocContent = async() => {
-      await axios.get(`http://localhost:3000/auth/documents/${params.id}`)
+      await axios.get(`http://localhost:3000/auth/documents/${params.id}`, { headers: sessionData })
       .then( (res)=>{
         console.log(res.data)
         const raw = res.data.versions[params.version - 1].body;
@@ -77,15 +84,12 @@ const TextEditor = ({location}) => {
     const jsonData = JSON.stringify(raw, null, 2);
     // console.log(jsonData);
     const ID = UUID.generate();
-    // console.log(ID);
     await axios.post("http://localhost:3000/auth/documents", {
       "doc_num": ID,
       "title": inputTitle,
-      // "body": jsonData,
       "category_id": location.state.category,
-      // "version": 1,
-      // "reason": "新規作成"
-    }).then( (res)=>{
+    }, { headers: sessionData })
+    .then( (res)=>{
       console.log("documents:", res.data);
       // ここでversionのデータを作成
       axios.post("http://localhost:3000/auth/versions", {
@@ -108,7 +112,8 @@ const TextEditor = ({location}) => {
     await axios.put(`http://localhost:3000/auth/documents/${params.id}`,{
       "title": inputTitle
       // "body": jsonData
-    }).then( (res)=>{
+    }, { headers: sessionData })
+    .then( (res)=>{
       console.log(res.data.versions[params.version - 1].id)
       const verId = res.data.versions[params.version - 1].id;
       axios.put(`http://localhost:3000/auth/versions/${verId}`,{
