@@ -30,6 +30,11 @@ const DocumentHistory = () => {
     getDocumentData();
   }, [] ) 
 
+  const formatDate = (dateStr) => {
+    const teamSignupDate = new Date(dateStr);
+    return teamSignupDate.toLocaleString('ja-JP');
+  }
+
   return (
     <Box maxW="750px" my={12} mx="auto" p={3}>
       <Heading as="h3" size="md" mb={8}>「{docName}」バージョン一覧</Heading>
@@ -61,10 +66,13 @@ const DocumentHistory = () => {
               <HStack borderBottom="1px" borderColor="gray.400" pb={3}>
                 <Text>バージョン{ver.number}</Text>
                 <Spacer />
-                <Button
-                  size="xs" bgColor="gray.300"
-                  onClick={ ()=>{ navigate(`/document/${params.id}/ver/${ver.number}`) } }
-                >このバージョンを確認</Button>
+                <HStack>
+                  <Text color="gray.500" fontSize="0.9em" mr={5}>{formatDate(ver.created_at)}</Text>
+                  <Button
+                    size="xs" bgColor="gray.300"
+                    onClick={ ()=>{ navigate(`/document/${params.id}/ver/${ver.number}`) } }
+                  >このバージョンを確認</Button>
+                </HStack>
               </HStack>
             </Box>
           </Box>
