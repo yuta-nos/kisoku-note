@@ -23,7 +23,7 @@ class Auth::DocumentsController < ApplicationController
   def update
     document = Document.find_by(doc_num: params[:id])
     document.update(document_params)
-    render status: 200, json: { data: document }
+    render status: 200, json: document, serializer: DocumentSerializer
   end
 
   def destroy

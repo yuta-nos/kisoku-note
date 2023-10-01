@@ -1,8 +1,12 @@
 class Auth::VersionsController < ApplicationController
   def index
+    versions = Version.all
+    render json: versions
   end
 
   def show
+    version = Version.find_by(id: params[:id])
+    render status: 200, json: { data: version }
   end
 
   def create
@@ -15,8 +19,12 @@ class Auth::VersionsController < ApplicationController
   end
 
   def update
-    version = Version.update(version_params)
-    render status: 200, json: { data: version }
+    version = Version.find_by(id: params[:id])
+    if version.update(version_params)
+      render status: 200, json: { data: version }
+    else
+      render status: 400, json: { data: version.errors }
+    end
   end
 
   def destroy

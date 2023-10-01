@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 // styling
-import { Box, Heading, Text, Button, VStack, HStack } from '@chakra-ui/react'
+import { Box, Heading, Text, Button, VStack, HStack, Link, Spacer } from '@chakra-ui/react'
 
 const DocumentsIndex = () => {
 
@@ -62,11 +62,22 @@ const DocumentsIndex = () => {
                 p={5}
                 m={3}
               >
-                <Heading as="h3" size="sm" my={3}>
-                  {document.title}
-                </Heading>
+                <HStack
+                  my={3}
+                  borderBottom="1px" pb={5} borderColor="gray.400"
+                >
+                  <Heading as="h3" size="sm" >{document.title}</Heading>
+                  <Spacer/>
+                  <Link
+                    onClick={ ()=>{ navigate(`/document/${document.doc_num}/history`) } }
+                  >この文書の更新履歴を見る</Link>
+                </HStack>
                 <VStack align="left">
-                  {thisDocVers.map( (ver)=>{
+                  {thisDocVers
+                    .sort( (a, b)=>{
+                      return a.id - b.id 
+                    } )
+                    .map( (ver)=>{
                     return(
                       <HStack key={ver.id} my={2}>
                         <Button
