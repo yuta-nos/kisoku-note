@@ -109,10 +109,11 @@ const TextEditor = ({location}) => {
       "title": inputTitle
       // "body": jsonData
     }).then( (res)=>{
-      console.log(res.data)
-      axios.put(`http://localhost:3000/auth/versions/${params.version}`,{
+      console.log(res.data.versions[params.version - 1].id)
+      const verId = res.data.versions[params.version - 1].id;
+      axios.put(`http://localhost:3000/auth/versions/${verId}`,{
         "body": jsonData
-      })
+      }).then( (res)=>{ console.log(res.data) } )
       setReadOnly(true);
     } )
   }
