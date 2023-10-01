@@ -25,6 +25,7 @@ import {
 
 const TextEditor = ({location}) => {
 
+  // draft.js
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -67,7 +68,7 @@ const TextEditor = ({location}) => {
 
   // logined_user取得（後でauthorを付与するため）
   const user = useSelector( (state)=>{ return state.signin } );
-  // console.log(user);
+  console.log(user);
   
   // 文書保存
   const saveContent = async() => {
@@ -129,7 +130,10 @@ const TextEditor = ({location}) => {
       "body": jsonData,
       "number": parseInt(params.version) + 1,
       "reason": versionUpReason
-    }).then( (res)=>{ console.log(res.data) } )
+    }).then( (res)=>{
+      console.log(res.data);
+      navigate(`/team/${user.team.id}/category/${location.state.category}`)
+    } )
   }
 
   const toggleBold = (e) => {
@@ -139,6 +143,10 @@ const TextEditor = ({location}) => {
   const toggleItalic = (e) => {
     e.preventDefault();
     setEditorState(RichUtils.toggleInlineStyle(editorState, "ITALIC"));
+  }
+  const toggleUnderline = (e) => {
+    e.preventDefault();
+    setEditorState(RichUtils.toggleInlineStyle(editorState, "UNDERLINE"));
   }
   const toggleH1 = (e) => {
     e.preventDefault();
@@ -160,6 +168,15 @@ const TextEditor = ({location}) => {
     e.preventDefault();
     setEditorState(RichUtils.toggleBlockType(editorState, "header-five"));
   }
+  const toggleUl = (e) => {
+    e.preventDefault;
+    setEditorState(RichUtils.toggleBlockType(editorState, "unordered-list-item"));
+  };
+  const togglOl = (e) => {
+    e.preventDefault;
+    setEditorState(RichUtils.toggleBlockType(editorState, "ordered-list-item"));
+  };
+
 
   const [inputTitle, setInputTitle] = useState("");
 
@@ -172,95 +189,113 @@ const TextEditor = ({location}) => {
       { readOnly ? 
         <Button my={5} onClick={ ()=>{ setReadOnly( !readOnly ) } }>編集する</Button>
       :
-        <HStack my={5}>
-          { location.pathname === "/new-document" ?
-            <Button
-              onClick={saveContent}
-              bgColor="red.100"
-            >保存</Button>
-          :
+        <Box>
+          <HStack my={5}>
+            { location.pathname === "/new-document" ?
+              <Button
+                onClick={saveContent}
+                bgColor="red.100"
+              >保存</Button>
+            :
+              <HStack spacing="3px">
+                <Button
+                  onClick={updateContent}
+                  bgColor="red.100"
+                  borderRadius="10px 0 0 10px"
+                >更新</Button>
+                <Button
+                  onClick={ onOpen }
+                  bgColor="red.100"
+                  borderRadius={0}
+                >Ver.更新</Button>
+                <Button
+                  onClick={ ()=>{ setReadOnly(true) } }
+                  borderRadius="0 10px 10px 0"
+                >完了</Button>
+              </HStack>
+            }
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>更新理由</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <Textarea
+                    placeholder='ここに更新理由を記載'
+                    height="300px"
+                    onChange={ (e)=>{ setVersionUpReason(e.target.value) } }
+                  />
+                </ModalBody>
+
+                <ModalFooter>
+                  <Button
+                    mr={3} colorScheme="red"
+                    onClick={updateVersion}
+                  >バージョン更新</Button>
+                  <Button onClick={onClose}>
+                    Close
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </HStack>
+          <HStack mb={5}>
             <HStack spacing="3px">
               <Button
-                onClick={updateContent}
-                bgColor="red.100"
+                onClick={toggleBold}
                 borderRadius="10px 0 0 10px"
-              >更新</Button>
+                fontSize="0.8em"
+              >太字</Button>
               <Button
-                onClick={ onOpen }
-                bgColor="red.100"
-                borderRadius={0}
-              >Ver.更新</Button>
+                onClick={toggleItalic}
+                borderRadius="0"
+                fontSize="0.7em"
+              >イタリック</Button>
               <Button
-                onClick={ ()=>{ setReadOnly(true) } }
-                borderRadius="0 10px 10px 0"
-              >完了</Button>
+                  onClick={toggleUnderline}
+                  borderRadius="0 10px 10px 0"
+                  style={{textDecoration:"underline"}}
+                  fontSize="0.8em"
+                >下線</Button>
             </HStack>
-          }
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>更新理由</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Textarea
-                  placeholder='ここに更新理由を記載'
-                  height="300px"
-                  onChange={ (e)=>{ setVersionUpReason(e.target.value) } }
-                />
-              </ModalBody>
 
-              <ModalFooter>
-                <Button
-                  mr={3} colorScheme="red"
-                  onClick={updateVersion}
-                >バージョン更新</Button>
-                <Button onClick={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-          <HStack spacing="3px">
-            <Button
-              onClick={toggleBold}
-              borderRadius="10px 0 0 10px"
-              fontSize="0.8em"
-            >太字</Button>
-            <Button
-              onClick={toggleItalic}
-              borderRadius="0"
-              fontSize="0.7em"
-            >イタリック</Button>
-            <Button
+            <HStack spacing="3px">
+              <Button
+                onClick={toggleUl}
+                fontSize="0.8em"
+                borderRadius="10px 0 0 10px"
+              >箇条書き</Button>
+              <Button
+                onClick={togglOl}
+                fontSize="0.8em"
+                borderRadius="0 10px 10px 0"
+              >番号リスト</Button>
+            </HStack>
+
+            <HStack spacing="3px">
+              <Button
+                onClick={toggleH1}
+                borderRadius="10px 0 0 10px"
+              >H1</Button>
+              <Button
+                onClick={toggleH2}
+                borderRadius={0}
+              >H2</Button>
+              <Button
+                onClick={toggleH3}
+                borderRadius={0}
+              >H3</Button>
+              <Button
+                onClick={toggleH4}
+                borderRadius={0}
+              >H4</Button>
+              <Button
                 onClick={toggleH5}
                 borderRadius="0 10px 10px 0"
-                style={{textDecoration:"underline"}}
-                fontSize="0.8em"
-              >下線</Button>
+              >H5</Button>
+            </HStack>
           </HStack>
-          <HStack spacing="3px">
-            <Button
-              onClick={toggleH1}
-              borderRadius="10px 0 0 10px"
-            >H1</Button>
-            <Button
-              onClick={toggleH2}
-              borderRadius={0}
-            >H2</Button>
-            <Button
-              onClick={toggleH3}
-              borderRadius={0}
-            >H3</Button>
-            <Button
-              onClick={toggleH4}
-              borderRadius={0}
-            >H4</Button>
-            <Button
-              onClick={toggleH5}
-              borderRadius="0 10px 10px 0"
-            >H5</Button>
-          </HStack>
-        </HStack>
+        </Box>
       }
       <Input
         fontSize="xl"
@@ -273,6 +308,7 @@ const TextEditor = ({location}) => {
       />
       <Box
         mb={5} p={3} minH="300px"
+        height="80vh" overflow="scroll" //　document量が多い場合はスクロール
         border="1px" borderColor="gray.200" borderRadius={5}
       >
         <Editor

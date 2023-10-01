@@ -10,10 +10,11 @@ import { Box } from '@chakra-ui/react'
 const DocumentPage = () => {
 
   const location = useLocation();
+  console.log(location)
 
   return (
     <Box maxW="750px" my={12} mx="auto" p={3}>
-      <TextEditor location={location} />
+      <TextEditor location={location}/>
     </Box>
   )
 }
