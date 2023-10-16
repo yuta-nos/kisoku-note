@@ -19,9 +19,9 @@ services:
   web:
     build: ./frontend
     tty: true
-    command: bash -c " cd app-front && npm install && npm run dev --host "
+    command: bash -c " cd front && npm install && npm start "
     ports:
-      - 5173:5173
+      - 3001:3001
     volumes:
       - ./frontend:/app
 volumes:

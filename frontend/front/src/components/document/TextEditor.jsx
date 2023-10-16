@@ -174,11 +174,11 @@ const TextEditor = ({location}) => {
     setEditorState(RichUtils.toggleBlockType(editorState, "header-five"));
   }
   const toggleUl = (e) => {
-    e.preventDefault;
+    e.preventDefault();
     setEditorState(RichUtils.toggleBlockType(editorState, "unordered-list-item"));
   };
   const togglOl = (e) => {
-    e.preventDefault;
+    e.preventDefault();
     setEditorState(RichUtils.toggleBlockType(editorState, "ordered-list-item"));
   };
 

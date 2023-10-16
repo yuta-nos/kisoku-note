@@ -1,7 +1,7 @@
 import React from 'react'
 
 // styling
-import { Box, HStack, Spacer, Link, Text } from '@chakra-ui/react'
+import { Box, Text } from '@chakra-ui/react'
 
 const Footer = () => {
   return (
