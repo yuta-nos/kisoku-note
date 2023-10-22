@@ -93,6 +93,7 @@ const TextEditor = ({location}) => {
     }, { headers: sessionData })
     .then( (res)=>{
       console.log("documents:", res.data);
+      const category_id = res.data.data.category_id;
       // ここでversionのデータを作成
       const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions`;
       axios.post(ENDPOINT, {
@@ -102,7 +103,7 @@ const TextEditor = ({location}) => {
         "reason": "新規作成"
       }).then( (res)=>{
         console.log("versions:",res.data);
-        navigate(`/team/${user.team.id}/category/${docData.category.id}`);
+        navigate(`/team/${user.team.id}/category/${category_id}`);
       } );
     } );
   }

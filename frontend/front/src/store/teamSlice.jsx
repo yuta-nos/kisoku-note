@@ -32,16 +32,15 @@ const teamSlice = createSlice({
 const { get, create, updateName } = teamSlice.actions;
 
 const asyncGetTeam = (payload) => {
-  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/teams/${payload.id}`;
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/teams/${payload.id}`;
   return( async(dispatch, getState)=>{
     const result = await axios.get(ENDPOINT, {
-      params: {
+      headers: {
         "access-token": payload.accesstoken,
         "client": payload.client,
         "uid": payload.uid
       }
-    })
-    .then( (res)=>{ return res.data } );
+    }).then( (res)=>{ console.log("ここ"); return res.data } );
     dispatch( get(result) );
   } );
 };
