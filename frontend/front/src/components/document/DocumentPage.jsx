@@ -8,7 +8,7 @@ import { useLocation, useParams } from 'react-router-dom'
 import axios from 'axios'
 
 // styling
-import { Box, HStack, Text, Textarea } from '@chakra-ui/react'
+import { Box, HStack } from '@chakra-ui/react'
 
 const DocumentPage = () => {
 
@@ -32,7 +32,7 @@ const DocumentPage = () => {
       .then( (res)=>{
         console.log("from useEffect", res.data.versions)
         const verData = res.data.versions.filter( (ver)=>{
-          return ver.number == parseInt(params.version)
+          return ver.number === parseInt(params.version)
         } )
         console.log("verデータ", verData)
         const lines = verData[0].reason?.split('\n'); //改行を変換
@@ -44,7 +44,7 @@ const DocumentPage = () => {
 
   return (
     <Box maxW="750px" my={12} mx="auto" p={3}>
-      { params.version == 1 ?
+      { params.version === 1 ?
         <></> 
       :
         <Box p={5} border="1px" borderColor="red.500" bgColor="red.50">

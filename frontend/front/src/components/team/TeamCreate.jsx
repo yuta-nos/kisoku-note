@@ -16,7 +16,7 @@ import { Box, Button, Heading, Input, Text } from "@chakra-ui/react";
 const TeamCreate = () => {
 
   const [ inputName, setInputName ] = useState();
-  const [ teamId, setTeamId ] = useState();
+  // const [ teamId, setTeamId ] = useState();
 
   const userData = useSelector( (state)=>{ return state.signin } );
   const dispatch = useDispatch();

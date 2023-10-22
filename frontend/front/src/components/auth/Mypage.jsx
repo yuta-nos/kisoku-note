@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Signout from './Signout';
 
 // redux
@@ -9,7 +9,7 @@ import { asyncSetSession } from '../../store/signinSlice';
 import { useNavigate } from 'react-router-dom'
 
 // 非同期処理
-import axios from 'axios'
+// import axios from 'axios'
 
 // styling
 import { Box, Button, Heading, HStack, Text, Link } from '@chakra-ui/react'

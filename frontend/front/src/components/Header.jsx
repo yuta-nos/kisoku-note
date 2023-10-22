@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
 import { asyncSetSession, asyncDeleteSession } from "../store/signinSlice";
 
 // 非同期処理
-import axios from 'axios';
+// import axios from 'axios';
 
 // route
 import { useNavigate } from "react-router-dom";

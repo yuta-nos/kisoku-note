@@ -61,5 +61,5 @@ const asyncUpdateTeamName = (payload) => {
   } )
 }
 
-export { asyncGetTeam, asyncUpdateTeamName };
+export { asyncGetTeam, asyncCreateTeam, asyncUpdateTeamName };
 export default teamSlice.reducer;

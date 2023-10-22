@@ -1,7 +1,7 @@
 import React,{ useState } from 'react'
 
 // redux
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { asyncSetSession } from '../../store/signinSlice';
 
 // 非同期処理
@@ -15,7 +15,7 @@ import { Box, Input, Button, Heading, Text, useToast } from "@chakra-ui/react";
 
 const Signin = () => {
 
-  const sessionState = useSelector( (state)=>{ return state.signin } );
+  // const sessionState = useSelector( (state)=>{ return state.signin } );
   const dispatch = useDispatch();
 
   const [inputEmail, setInputEmail] = useState();
@@ -31,7 +31,7 @@ const Signin = () => {
       password: inputPassword
     }
     try{
-      const result = await axios.post("http://localhost:3000/auth/sign_in", signinData)
+      await axios.post("http://localhost:3000/auth/sign_in", signinData)
       .then( (res)=>{
         console.log(res);
         if( res.status === 200 ){
