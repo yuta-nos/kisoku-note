@@ -17,7 +17,9 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
-  const toast = useToast()
+  const toast = useToast();
+
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth`;
 
   const trySignup = async() => {
     console.log(inputEmail, inputPassword);
@@ -27,7 +29,7 @@ const Signup = () => {
       password: inputPassword
     };
     try{
-      await axios.post("http://localhost:3000/auth", userData)
+      await axios.post(ENDPOINT, userData)
       .then( (res)=>{ 
         if( res.status === 200 ){
           navigate(`/mypage/${res.data.data.id}`);

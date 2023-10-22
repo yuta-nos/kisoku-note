@@ -36,13 +36,17 @@ const TeamCreate = () => {
     }
 
     // チームデータ作成
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/teams`;
     try {
-      await axios.post("http://localhost:3000/auth/teams", teamData, { headers: currentUserData } )
-      .then( (res)=>{ axios.put("http://localhost:3000/auth", { team_id: res.data.id }, { headers: currentUserData })
-      .then( (res)=>{ 
-        console.log(res.data);
-        navigate(`/mypage/${res.data.id}`);
-      } ); } );
+      await axios.post(ENDPOINT, teamData, { headers: currentUserData } )
+      .then( (res)=>{
+        const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth`;
+        axios.put(ENDPOINT, { team_id: res.data.id }, { headers: currentUserData })
+        .then( (res)=>{ 
+          console.log(res.data);
+          navigate(`/mypage/${res.data.id}`);
+        } ); 
+      } );
     } catch(error){
       console.log(error);
     }

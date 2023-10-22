@@ -21,9 +21,11 @@ const categorySlice = createSlice({
 
 const { getCategory, createCategory } = categorySlice.actions;
 
+const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/categories`;
+
 const asyncGetCategory = (payload) => {
   return( async( dispatch, getState )=>{
-    const result = await axios.get("http://localhost:3000/auth/categories", { params: payload })
+    const result = await axios.get(ENDPOINT, { params: payload })
     .then( (res)=>{ return res.data } );
     dispatch( getCategory( result.data ) )
   } )
@@ -31,7 +33,7 @@ const asyncGetCategory = (payload) => {
 
 const asyncCreateCategory = (payload, sessionData) => {
   return( async( dispatch, getState )=>{
-    const result = await axios.post("http://localhost:3000/auth/categories", payload, { headers: sessionData })
+    const result = await axios.post(ENDPOINT, payload, { headers: sessionData })
     .then( (res)=>{ return res.data } );
     dispatch( createCategory( result ) );
   } )

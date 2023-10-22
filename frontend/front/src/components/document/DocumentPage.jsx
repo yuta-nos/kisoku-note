@@ -27,8 +27,9 @@ const DocumentPage = () => {
   };
 
   useEffect( ()=>{
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents/${params.id}`;
     const getVersionData = async() => {
-      await axios.get(`http://localhost:3000/auth/documents/${params.id}`, { headers: sessionData })
+      await axios.get(ENDPOINT, { headers: sessionData })
       .then( (res)=>{
         console.log("from useEffect", res.data.versions)
         const verData = res.data.versions.filter( (ver)=>{

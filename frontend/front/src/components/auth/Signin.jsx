@@ -26,12 +26,13 @@ const Signin = () => {
   const toast = useToast()
 
   const trySignin = async() => {
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/sign_in`;
     const signinData = {
       email: inputEmail,
       password: inputPassword
     }
     try{
-      await axios.post("http://localhost:3000/auth/sign_in", signinData)
+      await axios.post(ENDPOINT, signinData)
       .then( (res)=>{
         console.log(res);
         if( res.status === 200 ){

@@ -22,8 +22,9 @@ const DocumentsIndex = () => {
   const [ targetCat, setTargetCat ] = useState();
   
   useEffect( ()=>{
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/categories/${params.category}`;
     const getTargetCategory = async() => {
-      const result = await axios.get(`http://localhost:3000/auth/categories/${params.category}`, { params: sessionData })
+      const result = await axios.get(ENDPOINT, { params: sessionData })
       .then( (res)=>{ console.log(res.data); return res.data } );
       setTargetCat(result);
     }

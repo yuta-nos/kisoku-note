@@ -32,8 +32,9 @@ const teamSlice = createSlice({
 const { get, create, updateName } = teamSlice.actions;
 
 const asyncGetTeam = (payload) => {
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/teams/${payload.id}`;
   return( async(dispatch, getState)=>{
-    const result = await axios.get(`http://localhost:3000/auth/teams/${payload.id}`, {
+    const result = await axios.get(ENDPOINT, {
       params: {
         "access-token": payload.accesstoken,
         "client": payload.client,
@@ -46,16 +47,18 @@ const asyncGetTeam = (payload) => {
 };
 
 const asyncCreateTeam = () => {
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/teams`;
   return( async(dispatch, getState)=>{
-    const result = await axios.post("http://localhost:3000/auth/teams")
+    const result = await axios.post(ENDPOINT)
     .then( (res)=>{ return res.data } );
     dispatch( create(result) )
   } );
 };
 
 const asyncUpdateTeamName = (payload) => {
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/teams/${payload.id}`;
   return( async(dispatch, getState)=>{
-    const result = await axios.put(`http://localhost:3000/teams/${payload.id}`, { name: payload.name})
+    const result = await axios.put(ENDPOINT, { name: payload.name})
     .then( (res)=>{ return res.data } );
     dispatch( updateName(result) );
   } )

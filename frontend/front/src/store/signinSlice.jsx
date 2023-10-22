@@ -44,8 +44,9 @@ const signinSlice = createSlice({
 const { setSession, deleteSession } = signinSlice.actions;
 
 const asyncSetSession = (payload) => {
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/sessions`;
   return( async( dispatch, getState )=>{
-    const result = await axios.get("http://localhost:3000/auth/sessions", { params: payload })
+    const result = await axios.get(ENDPOINT, { params: payload })
     .then( (res)=>{ return res.data } );
     if( result.is_login === false ){
       dispatch( setSession( {
@@ -64,8 +65,9 @@ const asyncSetSession = (payload) => {
   } );
 }
 const asyncDeleteSession = (payload) => {
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/sign_out`;
   return( async( dispatch, getState ) => {
-    const result = await axios.delete("http://localhost:3000/auth/sign_out", { params: payload })
+    const result = await axios.delete(ENDPOINT, { params: payload })
     .then( (res)=>{return res.data} );
     dispatch( deleteSession(result) );
   } )

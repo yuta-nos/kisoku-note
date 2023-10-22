@@ -53,8 +53,9 @@ const TextEditor = ({location}) => {
 
   // 文書データ取得用
   useEffect( ()=>{
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents/${params.id}`;
     const getDocContent = async() => {
-      await axios.get(`http://localhost:3000/auth/documents/${params.id}`, { headers: sessionData })
+      await axios.get(ENDPOINT, { headers: sessionData })
       .then( (res)=>{
         console.log(res.data)
         const raw = res.data.versions[params.version - 1].body;
@@ -84,7 +85,8 @@ const TextEditor = ({location}) => {
     const jsonData = JSON.stringify(raw, null, 2);
     // console.log(jsonData);
     const ID = UUID.generate();
-    await axios.post("http://localhost:3000/auth/documents", {
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents`;
+    await axios.post(ENDPOINT, {
       "doc_num": ID,
       "title": inputTitle,
       "category_id": location.state.category,
@@ -92,7 +94,8 @@ const TextEditor = ({location}) => {
     .then( (res)=>{
       console.log("documents:", res.data);
       // ここでversionのデータを作成
-      axios.post("http://localhost:3000/auth/versions", {
+      const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions`;
+      axios.post(ENDPOINT, {
         "document_id": res.data.data.id,
         "number": 1,
         "body": jsonData,
@@ -109,14 +112,16 @@ const TextEditor = ({location}) => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
-    await axios.put(`http://localhost:3000/auth/documents/${params.id}`,{
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents/${params.id}`;
+    await axios.put(ENDPOINT,{
       "title": inputTitle
       // "body": jsonData
     }, { headers: sessionData })
     .then( (res)=>{
       console.log(res.data.versions[params.version - 1].id)
       const verId = res.data.versions[params.version - 1].id;
-      axios.put(`http://localhost:3000/auth/versions/${verId}`,{
+      const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions/${verId}`;
+      axios.put(ENDPOINT,{
         "body": jsonData
       }).then( (res)=>{ console.log(res.data) } )
       setReadOnly(true);
@@ -130,7 +135,8 @@ const TextEditor = ({location}) => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
-    await axios.post(`http://localhost:3000/auth/versions`,{
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions`;
+    await axios.post(ENDPOINT,{
       "document_id": docData.id,
       "body": jsonData,
       "number": parseInt(params.version) + 1,

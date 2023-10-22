@@ -26,8 +26,9 @@ const DocumentHistory = () => {
   };
 
   useEffect( ()=>{
+    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents/${params.id}`;
     const getDocumentData = async() => {
-      await axios.get(`http://localhost:3000/auth/documents/${params.id}`, { headers: sessionData })
+      await axios.get(ENDPOINT, { headers: sessionData })
       .then( (res)=>{
         console.log(res.data);
         setVerData(res.data.versions);
