@@ -4,7 +4,7 @@ import React from 'react'
 import { useNavigate } from "react-router-dom";
 
 // styling
-import { Box, Button, Divider, Heading, Stack, Spacer, Text, VStack, Image, Wrap, WrapItem } from '@chakra-ui/react'
+import { Box, Button, Divider, Heading, Stack, Spacer, Text, VStack, Image } from '@chakra-ui/react'
 
 const Home = () => {
 

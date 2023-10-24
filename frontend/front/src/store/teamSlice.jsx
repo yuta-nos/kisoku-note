@@ -46,7 +46,7 @@ const asyncGetTeam = (payload) => {
 };
 
 const asyncCreateTeam = () => {
-  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/teams`;
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/teams`;
   return( async(dispatch, getState)=>{
     const result = await axios.post(ENDPOINT)
     .then( (res)=>{ return res.data } );
@@ -55,9 +55,13 @@ const asyncCreateTeam = () => {
 };
 
 const asyncUpdateTeamName = (payload) => {
-  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/teams/${payload.id}`;
+  const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/teams/${payload.id}`;
   return( async(dispatch, getState)=>{
-    const result = await axios.put(ENDPOINT, { name: payload.name})
+    const result = await axios.put(ENDPOINT, { name: payload.name }, { headers: {
+      "access-token": payload.accesstoken,
+      "client": payload.client,
+      "uid": payload.uid
+    } })
     .then( (res)=>{ return res.data } );
     dispatch( updateName(result) );
   } )

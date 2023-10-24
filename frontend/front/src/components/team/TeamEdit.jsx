@@ -26,7 +26,10 @@ const TeamEdit = () => {
   const updateTeamName = (data) => {
     const newData = {
       id: data.id,
-      name: teamName
+      name: teamName,
+      accesstoken: localStorage.getItem("access-token"),
+      client: localStorage.getItem("client"),
+      uid: localStorage.getItem("uid")
     }
     dispatch( asyncUpdateTeamName(newData) )
     .then( ()=>{ navigate(`/team/${location.state.id}`) } );
