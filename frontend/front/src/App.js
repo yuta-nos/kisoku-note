@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 // home
 import Home from "./components/Home";
+import Page404 from "./components/Page404";
 // ログイン関連
 import Signup from "./components/auth/Signup";
 import Signin from "./components/auth/Signin";
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/new-document" element={<NewDocument />} />
         <Route path="/document/:id/ver/:version" element={<DocumentPage />} />
         <Route path="/document/:id/history" element={<DocumentHistory />} />
+        <Route path="*" element={<Page404 />} />
       </Routes>
       </div>
       <Footer />
