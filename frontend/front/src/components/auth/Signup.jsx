@@ -55,7 +55,7 @@ const Signup = () => {
 
   return (
     <Box
-      my={20} mx="auto" maxW="500px" p={10}
+      my={20} mx={["5", "auto"]} maxW="500px" p={10}
       bgColor="gray.100" borderRadius={5} boxShadow="lg" >
       <Box>
         <Heading as="h2" size="sm" mb={5}>ユーザー登録</Heading>
