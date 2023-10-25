@@ -53,22 +53,20 @@ const TextEditor = ({location}) => {
 
   // 文書データ取得用
   useEffect( ()=>{
-    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents/${params.id}`;
+    const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents/${params.id}`;
     const getDocContent = async() => {
       await axios.get(ENDPOINT, { headers: sessionData })
       .then( (res)=>{
-        console.log(res.data)
         const raw = res.data.versions[params.version - 1].body;
         const title = res.data.title;
-        // console.log(raw);
-        // console.log(title);
         const contentState = convertFromRaw(JSON.parse(raw));
         const newEditorState = EditorState.createWithContent(contentState);
         setEditorState(newEditorState);
         setInputTitle(title);
         setDocData(res.data);
       } );
-    }
+    };
+
     if(location.pathname !== "/new-document"){
       // 新規作成ページではない場合
       getDocContent();
@@ -80,53 +78,59 @@ const TextEditor = ({location}) => {
   
   // 文書保存
   const saveContent = async() => {
+
+    //documentデータ作成
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
-    // console.log(jsonData);
     const ID = UUID.generate();
-    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents`;
-    await axios.post(ENDPOINT, {
+
+    const ENDPOINT1 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents`;
+    const postedDocData = await axios.post(ENDPOINT1, {
       "doc_num": ID,
       "title": inputTitle,
       "category_id": location.state.category,
-    }, { headers: sessionData })
-    .then( (res)=>{
-      console.log("documents:", res.data);
-      const category_id = res.data.data.category_id;
-      // ここでversionのデータを作成
-      const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions`;
-      axios.post(ENDPOINT, {
-        "document_id": res.data.data.id,
-        "number": 1,
-        "body": jsonData,
-        "reason": "新規作成"
-      }).then( (res)=>{
-        console.log("versions:",res.data);
-        navigate(`/team/${user.team.id}/category/${category_id}`);
-      } );
-    } );
+    }, { headers: sessionData });
+
+    //versionデータ作成
+    console.log("documents:", postedDocData.data);
+    const category_id = postedDocData.data.category_id;
+    
+    const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions`;
+    const postedVerData = await axios.post(ENDPOINT2, {
+      "document_id": postedDocData.data.id,
+      "number": 1,
+      "body": jsonData,
+      "reason": "新規作成"
+    })
+    console.log("versions:",postedVerData.data);
+    navigate(`/team/${user.team.id}/category/${category_id}`);
   }
 
   // 文書更新
   const updateContent = async() => {
+
+    // 文書タイトルの更新
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
-    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/documents/${params.id}`;
-    await axios.put(ENDPOINT,{
+
+    const ENDPOINT1 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents/${params.id}`;
+    const updatedDocData = await axios.put(ENDPOINT1,{
       "title": inputTitle
-      // "body": jsonData
-    }, { headers: sessionData })
-    .then( (res)=>{
-      console.log(res.data.versions[params.version - 1].id)
-      const verId = res.data.versions[params.version - 1].id;
-      const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions/${verId}`;
-      axios.put(ENDPOINT,{
-        "body": jsonData
-      }).then( (res)=>{ console.log(res.data) } )
-      setReadOnly(true);
-    } )
+    }, { headers: sessionData });
+
+    //バージョンデータの更新
+    console.log("更新対象バージョン", updatedDocData.data.versions[params.version - 1].id);
+    const verId = updatedDocData.data.versions[params.version - 1].id;
+
+    const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions/${verId}`;
+    await axios.put(ENDPOINT2,{
+      "body": jsonData
+    }).then( (res)=>{ console.log("更新後データ", res.data) } );
+
+    // 編集モード終了
+    setReadOnly(true);
   }
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -136,7 +140,8 @@ const TextEditor = ({location}) => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     const jsonData = JSON.stringify(raw, null, 2);
-    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/versions`;
+
+    const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions`;
     await axios.post(ENDPOINT,{
       "document_id": docData.id,
       "body": jsonData,
