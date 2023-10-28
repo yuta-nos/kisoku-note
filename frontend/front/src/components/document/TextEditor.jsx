@@ -17,7 +17,7 @@ import axios from 'axios';
 import { UUID } from "uuidjs";
 
 // styling
-import { Box, Button, HStack, Input, Textarea } from "@chakra-ui/react";
+import { Box, Button, HStack, Input, Textarea, Wrap, WrapItem } from "@chakra-ui/react";
 import {
   useDisclosure,
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
@@ -81,57 +81,68 @@ const TextEditor = ({location}) => {
 
     //documentデータ作成
     const contentState = editorState.getCurrentContent();
+    console.log(contentState);
     const raw = convertToRaw(contentState);
+    console.log(raw)
     const jsonData = JSON.stringify(raw, null, 2);
+    console.log(jsonData)
     const ID = UUID.generate();
 
     const ENDPOINT1 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents`;
-    const postedDocData = await axios.post(ENDPOINT1, {
+    await axios.post(ENDPOINT1, {
       "doc_num": ID,
       "title": inputTitle,
       "category_id": location.state.category,
-    }, { headers: sessionData });
+    }, { headers: sessionData })
+    .then( (res)=>{
+      //versionデータ作成
+      console.log("documents:", res.data.data);
+      const category_id = res.data.data.category_id;
 
-    //versionデータ作成
-    console.log("documents:", postedDocData.data);
-    const category_id = postedDocData.data.category_id;
+      const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions`;
+      const postedVerData = axios.post(ENDPOINT2, {
+        "document_id": res.data.data.id,
+        "number": 1,
+        "body": jsonData,
+        "reason": "新規作成"
+      })
+      console.log("versions:",postedVerData.data);
+      navigate(`/team/${user.team.id}/category/${category_id}`);
+    } )
+
     
-    const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions`;
-    const postedVerData = await axios.post(ENDPOINT2, {
-      "document_id": postedDocData.data.id,
-      "number": 1,
-      "body": jsonData,
-      "reason": "新規作成"
-    })
-    console.log("versions:",postedVerData.data);
-    navigate(`/team/${user.team.id}/category/${category_id}`);
   }
+
 
   // 文書更新
   const updateContent = async() => {
 
     // 文書タイトルの更新
-    const contentState = editorState.getCurrentContent();
-    const raw = convertToRaw(contentState);
-    const jsonData = JSON.stringify(raw, null, 2);
-
-    const ENDPOINT1 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents/${params.id}`;
-    const updatedDocData = await axios.put(ENDPOINT1,{
-      "title": inputTitle
-    }, { headers: sessionData });
-
-    //バージョンデータの更新
-    console.log("更新対象バージョン", updatedDocData.data.versions[params.version - 1].id);
-    const verId = updatedDocData.data.versions[params.version - 1].id;
-
-    const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions/${verId}`;
-    await axios.put(ENDPOINT2,{
-      "body": jsonData
-    }).then( (res)=>{ console.log("更新後データ", res.data) } );
-
-    // 編集モード終了
-    setReadOnly(true);
-  }
+      try {
+        const ENDPOINT1 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents/${params.id}`;
+        const response1 = await axios.put(ENDPOINT1, {
+          "title": inputTitle
+        }, { headers: sessionData });
+    
+        console.log("更新対象バージョン", response1.data.versions[params.version - 1].id);
+    
+        const contentState = editorState.getCurrentContent();
+        const raw = convertToRaw(contentState);
+        const jsonData = JSON.stringify(raw, null, 2);
+    
+        const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions/${response1.data.versions[params.version - 1].id}`;
+        const response2 = await axios.patch(ENDPOINT2, {
+          "body": jsonData
+        });
+    
+        console.log("更新後データ", response2.data);
+    
+        // 編集モード終了
+        setReadOnly(true);
+      } catch (error) {
+        console.log("エラー発生：", error);
+      }
+    };      
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -256,12 +267,13 @@ const TextEditor = ({location}) => {
               </ModalContent>
             </Modal>
           </HStack>
-          <HStack mb={5}>
+          <Wrap mb={5}>
+            <WrapItem>
             <HStack spacing="3px">
               <Button
                 onClick={toggleBold}
                 borderRadius="10px 0 0 10px"
-                fontSize="0.8em"
+                fontSize="0.7em"
               >太字</Button>
               <Button
                 onClick={toggleItalic}
@@ -272,23 +284,27 @@ const TextEditor = ({location}) => {
                   onClick={toggleUnderline}
                   borderRadius="0 10px 10px 0"
                   style={{textDecoration:"underline"}}
-                  fontSize="0.8em"
+                  fontSize="0.7em"
                 >下線</Button>
             </HStack>
+            </WrapItem>
 
+            <WrapItem>
             <HStack spacing="3px">
               <Button
                 onClick={toggleUl}
-                fontSize="0.8em"
+                fontSize="0.7em"
                 borderRadius="10px 0 0 10px"
               >箇条書き</Button>
               <Button
                 onClick={togglOl}
-                fontSize="0.8em"
+                fontSize="0.7em"
                 borderRadius="0 10px 10px 0"
-              >番号リスト</Button>
+              >番号</Button>
             </HStack>
+            </WrapItem>
 
+            <WrapItem>
             <HStack spacing="3px">
               <Button
                 onClick={toggleH1}
@@ -311,7 +327,8 @@ const TextEditor = ({location}) => {
                 borderRadius="0 10px 10px 0"
               >H5</Button>
             </HStack>
-          </HStack>
+            </WrapItem>
+          </Wrap>
         </Box>
       }
       <Input
