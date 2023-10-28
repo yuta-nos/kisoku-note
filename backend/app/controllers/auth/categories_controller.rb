@@ -1,4 +1,5 @@
 class Auth::CategoriesController < ApplicationController
+  before_action :authenticate_user!
   
   def index
     categories = Category.all
@@ -7,7 +8,7 @@ class Auth::CategoriesController < ApplicationController
 
   def show
     category = Category.find(params[:id])
-    render status: 200, json: { data: category }
+    render status: 200, json: category, serializer: CategorySerializer
   end
 
   def create
