@@ -22,7 +22,7 @@ const DocumentsIndex = () => {
   const [ targetCat, setTargetCat ] = useState();
   
   useEffect( ()=>{
-    const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/categories/${params.category}`;
+    const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/categories/${params.category}`;
     const getTargetCategory = async() => {
       const result = await axios.get(ENDPOINT, { params: sessionData })
       .then( (res)=>{ console.log(res.data); return res.data } );
@@ -42,6 +42,12 @@ const DocumentsIndex = () => {
     return teamSignupDate.toLocaleDateString('ja-JP');
   }
 
+  const handleDelete = async (id) => {
+    const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents/${id}`;
+    console.log(id);
+    await axios.delete(ENDPOINT, { headers: sessionData }).then( (res)=>{ console.log(res.data) } );
+  };
+
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
       <Heading as="h3" size="md" mb={5}>「{targetCat?.name}」文書一覧</Heading>
@@ -53,6 +59,7 @@ const DocumentsIndex = () => {
         {targetCat?.documents
           .sort((a, b) => a.id - b.id)
           .map( (document)=>{
+            const id = document.id;
             const thisDocVers = targetCat?.versions.filter( (ver)=>{
               return ver.document_id === document.id;
             } )
@@ -72,6 +79,9 @@ const DocumentsIndex = () => {
                   <Link
                     onClick={ ()=>{ navigate(`/document/${document.doc_num}/history`) } }
                   >この文書の更新履歴を見る</Link>
+                  <Link
+                    onClick={ ()=>{ handleDelete(id) } }
+                  >[削除]</Link>
                 </HStack>
                 <VStack align="left">
                   {thisDocVers

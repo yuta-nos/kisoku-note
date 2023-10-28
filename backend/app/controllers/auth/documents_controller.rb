@@ -28,6 +28,12 @@ class Auth::DocumentsController < ApplicationController
   end
 
   def destroy
+    document = Document.find_by(id: params[:id])
+    if document.destroy
+      render status: 200, json: { message: "削除成功" }
+    else
+      render status: 400, json: { data: document.errors }
+    end
   end
 
   private
