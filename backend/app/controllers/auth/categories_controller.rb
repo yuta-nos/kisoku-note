@@ -21,9 +21,18 @@ class Auth::CategoriesController < ApplicationController
   end
 
   def update
+    category = Category.find_by(id: params[:id])
+    category.update(category_params)
+    render status: 200, json: category, serializer: CategorySerializer
   end
 
   def destroy
+    category = Category.find_by(id: params[:id])
+    if category.destroy
+      render status: 200, json: { message: "削除成功" }
+    else
+      render status: 400, json: { data: category.errors }
+    end
   end
 
   private

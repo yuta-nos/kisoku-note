@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { asyncGetAllCategories, asyncCreateCategory } from '../../store/categorySlice';
+import { asyncGetAllCategories } from '../../store/categorySlice';
+import { asyncCreateCategoryFromTeam, asyncDeleteCategoryFromTeam } from '../../store/teamSlice';
 
 // route
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ import {
 const Category = () => {
 
   const teamData = useSelector( (state)=>{ return state.team } );
+  console.log(teamData);
   const catData = useSelector( (state)=>{ return state.category } );
   const dispatch = useDispatch();
 
@@ -32,18 +34,23 @@ const Category = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [inputCatName, setInputCatName ] = useState(); 
+  const [isOpenAdd, setIsOpenAdd] = useState(false);
+  const [inputCatName, setInputCatName ] = useState(""); 
+  const [thisCatData, setThisCatData] = useState();
 
+  // カテゴリ追加関数
   const addCategory = () => {
     const categoryData = {
       name: inputCatName,
       team_id: teamData.id
     };
-    // axios.post("http://localhost:3000/auth/categories", categoryData, { headers: sessionData })
-    // .then( (res)=>{
-    //   console.log(res.data);
-    // } );
-    dispatch( asyncCreateCategory( categoryData, sessionData ) );
+    dispatch( asyncCreateCategoryFromTeam( categoryData, sessionData ) );
+  };
+
+  // カテゴリ削除関数
+  const deleteCategory = () => {
+    console.log(thisCatData);
+    dispatch( asyncDeleteCategoryFromTeam( thisCatData.id, sessionData ) );
     onClose();
   };
 
@@ -55,48 +62,70 @@ const Category = () => {
         <Text size="sm">管理文書カテゴリ</Text>
         <Spacer />
         <Button
-          colorScheme='teal'
+          colorScheme={isOpenAdd ? "gray" :'teal'}
           size='sm'
-          onClick={ onOpen }
-        >カテゴリ追加</Button>
+          onClick={ () => setIsOpenAdd(!isOpenAdd) }
+        >{isOpenAdd ? "×" : "カテゴリ追加"}</Button>
       </HStack>
+      { isOpenAdd ?
+        <HStack mb={5}>
+          <Input placeholder='追加カテゴリ名' onChange={(e) => setInputCatName(e.target.value)} />
+          <Button onClick={ ()=> {
+            addCategory();
+            setIsOpenAdd(false);
+          } } colorScheme="teal" >追加</Button>
+        </HStack>
+        :
+        <></>
+      }
+      
 
-      {/* カテゴリ追加のmodal */}
+      {/* モーダル */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>カテゴリ名</ModalHeader>
+          <ModalHeader>カテゴリ削除</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Input onChange={ (e)=>{ setInputCatName(e.target.value) } } />
+            <Box>
+              <Text mb={5}><Box as="span" fontWeight="bold">「{thisCatData?.name}」カテゴリ</Box>を削除します。</Text>
+              <Text>削除を実行すると<Box as="span" color="red">カテゴリ内の全ての文書</Box>が削除されます。本当によろしいですか？</Text>
+            </Box>
           </ModalBody>
           <ModalFooter>
-            <Button
-              colorScheme="teal" mr={3}
-              onClick={ addCategory }
-            >追加</Button>
-            <Button onClick={onClose}>キャンセル</Button>
+            <HStack>
+              <Button colorScheme="red" mr={3} onClick={ ()=>deleteCategory() }>削除実行</Button>
+              <Button onClick={onClose}>キャンセル</Button>
+            </HStack>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
       <Box>
-        {teamData?.categories?.map( (category)=>{
+        {teamData?.categories.map( (category)=>{
           const thisCatDocs = teamData.documents.filter( (doc)=>{
             return doc.category_id === category.id;
           } )
           return(
-            <Box
-              key={category.id}
-              mb={3} bgColor="gray.50" p={5} borderRadius={10}
-              cursor="pointer"
-              transition="0.3s"
-              _hover={{bgColor: "gray.200"}}
-              onClick={ () => { navigate(`/team/${teamData.id}/category/${category.id}`) } }
-            >
-              <Heading as="h4" size="sm" mb={3}>{category.name}</Heading>
-              <Text>管理文書数：{thisCatDocs.length}</Text>
-            </Box>
+            <HStack key={category.id} alignItems="top">
+              <Box
+                mb={3} bgColor="gray.50" p={5} borderRadius={10} w="92%"
+                cursor="pointer"
+                transition="0.3s"
+                _hover={{bgColor: "gray.200"}}
+                onClick={ () => { navigate(`/team/${teamData.id}/category/${category.id}`) } }
+              >
+                <Heading as="h4" size="sm" mb={3}>{category.name}</Heading>
+                <Text>管理文書数：{thisCatDocs.length}</Text>
+              </Box>
+              <Button
+                size="sm" _hover={{ bgColor: "gray.300" }}
+                onClick={ () => {
+                  setThisCatData(category);
+                  onOpen();
+                } }
+              >削除</Button>
+            </HStack>
           )
         } )}
         {catData?.some((category) => category.team_id === teamData.id) === false && (
