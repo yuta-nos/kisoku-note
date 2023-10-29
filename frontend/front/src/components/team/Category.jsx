@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 // redux
 import { useSelector, useDispatch } from 'react-redux';
-import { asyncGetCategory, asyncCreateCategory } from '../../store/categorySlice';
+import { asyncGetAllCategories, asyncCreateCategory } from '../../store/categorySlice';
 
 // route
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ const Category = () => {
   }
 
   useEffect( ()=>{
-    dispatch(asyncGetCategory(sessionData));
+    dispatch(asyncGetAllCategories(sessionData));
   }, [] )
 
   const { isOpen, onOpen, onClose } = useDisclosure();

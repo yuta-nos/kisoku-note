@@ -237,7 +237,10 @@ const TextEditor = ({location}) => {
                   borderRadius={0}
                 >Ver.更新</Button>
                 <Button
-                  onClick={ ()=>{ setReadOnly(true) } }
+                  onClick={ ()=>{
+                    setReadOnly(true);
+                    navigate(`/team/${user.team.id}/category/${docData.category.id}`)
+                  } }
                   borderRadius="0 10px 10px 0"
                 >完了</Button>
               </HStack>

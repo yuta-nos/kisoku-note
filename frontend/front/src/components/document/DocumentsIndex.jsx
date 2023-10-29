@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
+// redux
+import { useSelector, useDispatch } from 'react-redux';
+import { asyncGetDocsInThisCat, asyncDeleteDocsInThisCat } from '../../store/documentSlice';
+
 // route
 import { useParams, useNavigate } from 'react-router-dom'
-
-// 非同期処理
-import axios from 'axios'
 
 // styling
 import { Box, Heading, Text, Button, VStack, HStack, Link, Spacer, useToast } from '@chakra-ui/react'
@@ -17,32 +18,38 @@ const DocumentsIndex = () => {
 
   const params = useParams();
 
+  // redux用
+  const dispatch = useDispatch();
+  const targetCat = useSelector( (state) => { return state.document } );
+  console.log(targetCat);
+
+  // 認証用データ
   const sessionData = {
     "access-token": localStorage.getItem("access-token"),
     "client": localStorage.getItem("client"),
     "uid": localStorage.getItem("uid")
   }
 
-  const [ targetCat, setTargetCat ] = useState();
+  // const [ targetCat, setTargetCat ] = useState();
 
   const toast = useToast();
   
   useEffect( ()=>{
-    const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/categories/${params.category}`;
-    const getTargetCategory = async() => {
-      const result = await axios.get(ENDPOINT, { params: sessionData })
-      .then( (res)=>{ console.log(res.data); return res.data } );
-      setTargetCat(result);
-    }
-    getTargetCategory();
+    // const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/categories/${params.category}`;
+    // const getTargetCategory = async() => {
+    //   const result = await axios.get(ENDPOINT, { params: sessionData })
+    //   .then( (res)=>{ console.log("doc data:", res.data); return res.data } );
+    //   setTargetCat(result);
+    // }
+    // getTargetCategory();
+
+    // 初期表示データ取得
+    dispatch( asyncGetDocsInThisCat( params.category, sessionData ) );
   }, [] );
 
   const navigate = useNavigate();
 
-  const addDocument = () => {
-    navigate("/new-document", { state: params } );
-  }
-
+  // 日時データ成形
   const formatDate = (dateStr) => {
     const teamSignupDate = new Date(dateStr);
     return teamSignupDate.toLocaleDateString('ja-JP');
@@ -51,22 +58,17 @@ const DocumentsIndex = () => {
   // 文書削除
   const [ docInfo, setDocInfo ] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const handleDelete = async (id) => {
-    const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/documents/${id}`;
-    console.log(id);
+  const handleDelete = (id) => {
     try{
-      await axios.delete(ENDPOINT, { headers: sessionData })
-      .then( (res)=>{
-        console.log(res.data);
-        onClose();
-        // toast
-        toast({
-          title: '文書 削除完了',
-          status: 'success',
-          duration: 3000,
-          isClosable: true,
-        })
-      } );
+      dispatch( asyncDeleteDocsInThisCat(id, sessionData) );
+      onClose();
+      // toast
+      toast({
+        title: '文書 削除完了',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
     }
     catch(error){
       console.log("error:", error);
@@ -80,18 +82,20 @@ const DocumentsIndex = () => {
     }
   };
 
+  // 表示箇所
   return (
     <Box maxW="750px" my={12} mx="auto" p={3} >
       <Heading as="h3" size="md" mb={5}>「{targetCat?.name}」文書一覧</Heading>
       <Box mb={10}>
-        <Button colorScheme="teal" onClick={addDocument}>新規文書作成</Button>
+        <Button colorScheme="teal" onClick={() => {
+          navigate("/new-document", { state: params } );
+        }}>新規文書作成</Button>
       </Box>
       <Box>
         <Heading as="h4" size="sm" mb={5}>登録済み文書</Heading>
         {targetCat?.documents
-          .sort((a, b) => a.id - b.id)
+          // .sort((a, b) => a.id - b.id)
           .map( (document)=>{
-            // const id = document.id;
             const thisDocVers = targetCat?.versions.filter( (ver)=>{
               return ver.document_id === document.id;
             } )

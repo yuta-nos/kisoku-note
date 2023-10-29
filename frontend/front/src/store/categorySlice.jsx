@@ -3,14 +3,23 @@ import { createSlice } from "@reduxjs/toolkit";
 // 非同期処理
 import axios from "axios";
 
-const initState = [];
+const initState = 
+  [
+    {
+      id: "",
+      name: "",
+      team_id: "",
+      created_at: "",
+      updated_at: ""
+    }
+  ];
 
 const categorySlice = createSlice({
   name: "category",
   initialState: initState,
   reducers: {
     getCategory( state, { type, payload } ){
-      return [ ...payload ];
+      return payload;
     },
     createCategory( state, { type, payload } ){
       const newState = [...state];
@@ -21,15 +30,15 @@ const categorySlice = createSlice({
 
 const { getCategory, createCategory } = categorySlice.actions;
 
-const ENDPOINT = process.env.REACT_APP_API_LOCAL_ENDPOINT + `/auth/categories`;
+const ENDPOINT = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/categories`;
 
-const asyncGetCategory = (payload) => {
+const asyncGetAllCategories = (sessionData) => {
   return( async( dispatch, getState )=>{
-    const result = await axios.get(ENDPOINT, { params: payload })
+    const result = await axios.get(ENDPOINT, { headers: sessionData })
     .then( (res)=>{ return res.data } );
-    dispatch( getCategory( result.data ) )
+    dispatch( getCategory( result.data ) );
   } )
-};
+}
 
 const asyncCreateCategory = (payload, sessionData) => {
   return( async( dispatch, getState )=>{
@@ -39,5 +48,5 @@ const asyncCreateCategory = (payload, sessionData) => {
   } )
 };
 
-export { asyncGetCategory, asyncCreateCategory };
+export { asyncGetAllCategories, asyncCreateCategory };
 export default categorySlice.reducer;
