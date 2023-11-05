@@ -1,11 +1,18 @@
 Rails.application.routes.draw do
-  # get 'teams/show'
-  # get 'teams/create'
-  # get 'teams/update'
-  # get 'teams/destroy'
-  mount_devise_token_auth_for 'User', at: 'auth'
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :teams, only:[:create, :show, :update, :destroy]
-  # Defines the root path route ("/")
-  # root "articles#index"
+  
+  # devise_token_authのマウント
+  mount_devise_token_auth_for 'User', at: 'auth', controllers: {
+    registrations: 'auth/registrations',
+  }
+  
+  namespace :auth do
+    # ログインユーザー取得のルーティング
+    resources :sessions, only: [:index]
+    # auth配下に配置、devise_token_authの機能を使用可能に
+    resources :teams, only:[:create, :show, :update, :destroy]
+    resources :categories
+    resources :documents
+    resources :versions
+  end
+  
 end
