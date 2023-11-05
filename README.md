@@ -7,6 +7,11 @@ kisoku noteは、文書のバージョン管理用のWEBアプリケーション
 
 <img width="1440" alt="kisokunote_TOPページプレビュー" src="https://github.com/yuta-nos/kisoku-note/assets/120769259/a02ac6c9-a0b9-4d2c-a5f7-27bb4cb3b365">
 
+動作確認をされたい方は、以下でアカウントでログインいただくことができます。
+
+メールアドレス：test@mail.com
+パスワード：testuser
+
 ## 制作経緯
 
 本アプリの制作者は、とある地方の中小医療機器メーカーにて法令遵守体制整備や社内規定の作成・運用を業務として行なってきました。  
