@@ -1,4 +1,7 @@
 class Auth::VersionsController < ApplicationController
+
+  before_action :authenticate_user!
+
   def index
     versions = Version.all
     render json: versions

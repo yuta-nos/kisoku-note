@@ -105,7 +105,7 @@ const TextEditor = ({location}) => {
         "number": 1,
         "body": jsonData,
         "reason": "新規作成"
-      })
+      }, { headers: sessionData })
       console.log("versions:",postedVerData.data);
       navigate(`/team/${user.team.id}/category/${category_id}`);
     } )
@@ -133,7 +133,7 @@ const TextEditor = ({location}) => {
         const ENDPOINT2 = `${process.env.REACT_APP_API_LOCAL_ENDPOINT}/auth/versions/${response1.data.versions[params.version - 1].id}`;
         const response2 = await axios.patch(ENDPOINT2, {
           "body": jsonData
-        });
+        }, { headers: sessionData });
     
         console.log("更新後データ", response2.data);
     
@@ -158,7 +158,7 @@ const TextEditor = ({location}) => {
       "body": jsonData,
       "number": parseInt(params.version) + 1,
       "reason": versionUpReason
-    }).then( (res)=>{
+    }, { headers: sessionData }).then( (res)=>{
       console.log(res.data);
       navigate(`/team/${user.team.id}/category/${docData.category.id}`)
     } )
