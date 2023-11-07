@@ -55,7 +55,7 @@ const TeamPage = () => {
               variant='outline'
               size='sm'
               onClick={ ()=>{ navigate(`/team/${param.id}/edit`, {state: team}) } }
-            >組織情報を編集する（管理者のみ）</Button>
+            >組織情報を編集する</Button>
           </HStack>
           <Box mb={3} bgColor="gray.50" p={5} borderRadius={10}>
             <Text fontWeight="bold">{team?.name}</Text>

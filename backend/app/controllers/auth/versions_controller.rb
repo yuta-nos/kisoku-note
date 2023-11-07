@@ -2,10 +2,11 @@ class Auth::VersionsController < ApplicationController
 
   before_action :authenticate_user!
 
-  def index
-    versions = Version.all
-    render json: versions
-  end
+  # 動作確認用
+  # def index
+  #   versions = Version.all
+  #   render json: versions
+  # end
 
   def show
     version = Version.find_by(id: params[:id])
